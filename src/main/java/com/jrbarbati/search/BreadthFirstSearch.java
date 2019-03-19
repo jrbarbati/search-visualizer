@@ -1,14 +1,13 @@
 package com.jrbarbati.search;
 
 import com.jrbarbati.path.Node;
-
-import java.util.PriorityQueue;
+import com.jrbarbati.search.fringe.Queue;
 
 public class BreadthFirstSearch extends Search {
 
     public BreadthFirstSearch()
     {
-        super(new PriorityQueue<>());
+        super(new Queue());
     }
 
     @Override

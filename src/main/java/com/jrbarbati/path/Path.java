@@ -32,6 +32,14 @@ public class Path
         return this.path.get(++this.currentIndex);
     }
 
+    public List<Node> asList()
+    {
+        if (this.path == null)
+            this.path = new ArrayList<>();
+
+        return this.path;
+    }
+
     public int size()
     {
         return this.path.size();

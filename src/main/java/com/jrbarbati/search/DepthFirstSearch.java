@@ -1,14 +1,14 @@
 package com.jrbarbati.search;
 
 import com.jrbarbati.path.Node;
+import com.jrbarbati.search.fringe.Stack;
 
-import java.util.Stack;
 
 public class DepthFirstSearch extends Search
 {
     public DepthFirstSearch()
     {
-        super(new Stack<>());
+        super(new Stack());
     }
 
     @Override

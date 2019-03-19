@@ -2,33 +2,41 @@ package com.jrbarbati.search;
 
 import com.jrbarbati.path.Node;
 import com.jrbarbati.path.Path;
+import com.jrbarbati.search.fringe.Fringe;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 public abstract class Search
 {
-    private Collection<Node> fringe;
+    private Fringe fringe;
     private Set<Node> explored;
     private Set<Node> wall;
     private boolean isRunning;
     private Path path;
+    private Node startNode;
+    private Node endNode;
 
     public Search()
     {
         this(null);
     }
 
-    public Search(Collection<Node> fringe)
+    public Search(Fringe fringe)
     {
         this.fringe = fringe;
-        this.explored = new HashSet<>();
     }
 
-    public void executeIteration(Node startNode, Node endNode)
+    public void execute()
     {
         this.isRunning = true;
+
+        this.fringe.push(this.startNode);
+
+        while (!fringe.isEmpty())
+        {
+            Node currentNode = this.fringe.pop();
+        }
 
         if (this.noPathPossible())
             this.isRunning = false;
@@ -41,7 +49,12 @@ public abstract class Search
 
     public void addWallNode(Node node)
     {
-        this.wall.add(node);
+        this.getWallNodes().add(node);
+    }
+
+    public void removeWallNode(Node node)
+    {
+        this.getWallNodes().remove(node);
     }
 
     public boolean pathFound()
@@ -54,13 +67,22 @@ public abstract class Search
         return this.fringe.isEmpty() && this.path == null;
     }
 
-    public boolean isDone() {
+    public boolean isDone()
+    {
         return noPathPossible() || pathFound();
+    }
+
+    public void reset()
+    {
+        this.wall = null;
+        this.fringe = null;
+        this.explored = null;
+        this.path = null;
     }
 
     abstract int calculateHeuristic(Node currentNode, Node endNode);
 
-    public Collection<Node> getFringe()
+    public Fringe getFringe()
     {
         return this.fringe;
     }
@@ -84,5 +106,25 @@ public abstract class Search
     public Path getPath()
     {
         return path;
+    }
+
+    public Node getStartNode()
+    {
+        return this.startNode;
+    }
+
+    public void setStartNode(Node node)
+    {
+        this.startNode = node;
+    }
+
+    public Node getEndNode()
+    {
+        return this.endNode;
+    }
+
+    public void setEndNode(Node node)
+    {
+        this.endNode = node;
     }
 }

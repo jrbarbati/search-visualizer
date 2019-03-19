@@ -49,6 +49,11 @@ public class Gui
         JRadioButton ucs = new JRadioButton("UCS");
         JRadioButton aStar = new JRadioButton("A*");
 
+        dfs.setName("DFS");
+        bfs.setName("BFS");
+        ucs.setName("UCS");
+        aStar.setName("ASTAR");
+
         radioButtons.addAll(Arrays.asList(dfs, bfs, ucs, aStar));
 
         dfs.addActionListener(createActionListenerFor(dfs));
@@ -73,6 +78,7 @@ public class Gui
     }
 
     /**
+     * Default is Depth First Search
      * @param button radio button that was pressed
      * @return {@code ActionListener} that deselects all other radio buttons and sets the search algorithm to be the
      * selected one if the current search is done.
@@ -87,7 +93,9 @@ public class Gui
                 radioButton.setSelected(false);
 
             if (squaresPanel.getSearchAlgorithm().isDone())
-                squaresPanel.setSearchAlgorithm(searchFactory.getSearch(actionListenter.getActionCommand()));
+                squaresPanel.setSearchAlgorithm(searchFactory.getSearch(
+                        button.isSelected() ? button.getName() : "DFS"
+                ));
         });
     }
 

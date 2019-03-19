@@ -7,6 +7,7 @@ public class Node
     private Coordinate coordinate;
     private int g;
     private int h;
+    private Node parent;
 
     public Node(int x, int y, int rawX, int rawY)
     {
@@ -41,6 +42,16 @@ public class Node
     public void setH(int h)
     {
         this.h = h;
+    }
+
+    public Node getParent()
+    {
+        return this.parent;
+    }
+
+    public void setParent(Node parent)
+    {
+        this.parent = parent;
     }
 
     @Override

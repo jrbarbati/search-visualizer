@@ -1,15 +1,17 @@
 package com.jrbarbati.search;
 
 import com.jrbarbati.path.Node;
+import com.jrbarbati.search.fringe.PriorityQueue;
 
-import java.util.PriorityQueue;
 
 public class AStarSearch extends Search
 {
     public AStarSearch()
     {
         // TODO: Write comparator for PQ
-        super(new PriorityQueue<>());
+        super(new PriorityQueue((obj1, obj2) -> {
+            return 0;
+        }));
     }
 
     @Override
