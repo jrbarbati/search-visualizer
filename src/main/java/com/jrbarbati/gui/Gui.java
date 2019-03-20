@@ -48,7 +48,7 @@ public class Gui
         radioButtons.addAll(Arrays.asList(dfs, bfs, ucs, aStar));
 
         addActionListeners(dfs, bfs, ucs, aStar);
-        add(inputPanel, run, dfs, bfs, ucs, aStar);
+        addTo(inputPanel, run, dfs, bfs, ucs, aStar);
 
         squaresPanel.add(inputPanel, BorderLayout.SOUTH);
 
@@ -58,10 +58,16 @@ public class Gui
         mainFrame.setLocationRelativeTo(null);
     }
 
-    private void add(JPanel panel, java.awt.Component... components)
+    private void addTo(JPanel panel, java.awt.Component... components)
     {
         for (java.awt.Component component : components)
             panel.add(component);
+    }
+
+    private void addActionListeners(JRadioButton... components)
+    {
+        for(JRadioButton component : components)
+            component.addActionListener(createActionListenerFor(component));
     }
 
     /**
@@ -94,12 +100,6 @@ public class Gui
                 squaresPanel.getSearchAlgorithm().setWallNodes(wallNodes);
             }
         });
-    }
-
-    private void addActionListeners(JRadioButton... components)
-    {
-        for(JRadioButton component : components)
-            component.addActionListener(createActionListenerFor(component));
     }
 
     public void setVisible(boolean visible)

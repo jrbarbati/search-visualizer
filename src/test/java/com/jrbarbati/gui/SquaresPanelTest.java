@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class SquaresPanelTest
 {
@@ -19,8 +20,8 @@ public class SquaresPanelTest
     @Test
     public void calculateNodeCoordinate()
     {
-        assertEquals(new Coordinate(0, 0, 15, 15), squaresPanel.calculateNodeCoordinate(15, 15));
-        assertEquals(new Coordinate(49, 49, 996, 985), squaresPanel.calculateNodeCoordinate(996, 985));
-        assertEquals(new Coordinate(8, 11, 174, 233), squaresPanel.calculateNodeCoordinate(174, 233));
+        assertTrue(new Coordinate(0 , 0 , 0  , 0  ).deepEquals(squaresPanel.calculateNodeCoordinate(15 , 15 )));
+        assertTrue(new Coordinate(49, 49, 980, 980).deepEquals(squaresPanel.calculateNodeCoordinate(996, 985)));
+        assertTrue(new Coordinate(8 , 11, 160, 220).deepEquals(squaresPanel.calculateNodeCoordinate(174, 233)));
     }
 }
