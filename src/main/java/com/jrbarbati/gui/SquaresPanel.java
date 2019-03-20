@@ -134,21 +134,19 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
     {
         Coordinate coordinate = calculateNodeCoordinate(e.getX(), e.getY());
 
-        if (SwingUtilities.isLeftMouseButton(e))
-            if (shouldModifyStartNode())
-                getSearchAlgorithm().setStartNode(new Node(coordinate));
-            else if (shouldModifyEndNode())
-                getSearchAlgorithm().setEndNode(new Node(coordinate));
-            else
-                getSearchAlgorithm().addWallNode(new Node(coordinate));
+        boolean leftMousePressed = SwingUtilities.isLeftMouseButton(e);
 
-        if (SwingUtilities.isRightMouseButton(e))
-            if (shouldModifyStartNode())
-                getSearchAlgorithm().setStartNode(null);
-            else if (shouldModifyEndNode())
-                getSearchAlgorithm().setEndNode(null);
-            else
-                getSearchAlgorithm().removeWallNode(new Node(coordinate));
+        System.out.printf("Left Mouse? %s\n", leftMousePressed);
+        System.out.printf("Start Node? %s\n", shouldModifyStartNode());
+        System.out.printf("End Node? %s\n", shouldModifyEndNode());
+
+        if (shouldModifyStartNode())
+            getSearchAlgorithm().setStartNode(leftMousePressed ? new Node(coordinate) : null);
+        else if (shouldModifyEndNode())
+            getSearchAlgorithm().setEndNode(leftMousePressed ? new Node(coordinate) : null);
+        else
+            if (leftMousePressed) getSearchAlgorithm().addWallNode(new Node(coordinate));
+            else                  getSearchAlgorithm().removeWallNode(new Node(coordinate));
 
         repaint();
     }

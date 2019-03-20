@@ -3,11 +3,12 @@ package com.jrbarbati.search.fringe;
 import com.jrbarbati.path.Node;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.PriorityQueue;
 
 public class Queue implements Fringe
 {
-    PriorityQueue<Node> queue = new PriorityQueue<>();
+    PriorityQueue<Node> queue = new PriorityQueue<>((o1, o2) -> 0);
 
     @Override
     public void push(Node node)

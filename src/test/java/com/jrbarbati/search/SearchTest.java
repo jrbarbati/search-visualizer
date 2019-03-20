@@ -1,8 +1,13 @@
 package com.jrbarbati.search;
 
 import com.jrbarbati.path.Node;
+import com.jrbarbati.search.fringe.PriorityQueue;
+import com.jrbarbati.search.fringe.Queue;
+import com.jrbarbati.search.fringe.Stack;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -63,5 +68,29 @@ public class SearchTest
         node2.setParent(startNode);
 
         assertEquals(4, search.buildPath(startNode, endNode).size());
+    }
+
+    @Test
+    public void executeIteration() throws Exception
+    {
+        Search.MAX_BOUND = 3;
+        Search.MIN_BOUND = 0;
+
+        search.setFringe(new Stack());
+        search.setStartNode(new Node(0, 0, 0, 0));
+        search.setEndNode(new Node(2, 2, 40, 40));
+        search.setup();
+
+        while (!search.isDone())
+        {
+            search.executeIteration();
+            System.out.printf("Explored: %s\n", Arrays.toString(search.getExplored().toArray(new Node[] {})));
+            System.out.printf("Fringe:   %s\n\n", Arrays.toString(search.getFringe().asList().toArray(new Node[] {})));
+        }
+
+        System.out.println(Arrays.toString(search.getPath().asList().toArray(new Node[] {})));
+
+        assertEquals(search.getStartNode(), search.getPath().asList().get(0));
+        assertEquals(search.getEndNode(), search.getPath().asList().get(search.getPath().size() - 1));
     }
 }

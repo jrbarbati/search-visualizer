@@ -68,4 +68,10 @@ public class Node
     {
         return that instanceof Node && hashCode() == that.hashCode();
     }
+
+    @Override
+    public String toString()
+    {
+        return String.format("[%s - %d]", getCoordinate().toString(), getG() + getH());
+    }
 }

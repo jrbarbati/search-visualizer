@@ -3,12 +3,14 @@ package com.jrbarbati.search;
 import com.jrbarbati.path.Node;
 import com.jrbarbati.search.fringe.PriorityQueue;
 
+import java.util.Comparator;
+
 
 public class AStarSearch extends Search
 {
     public AStarSearch()
     {
-        super(new PriorityQueue((obj1, obj2) -> Integer.compare(obj2.getG() + obj2.getH(), obj1.getG() + obj1.getH())));
+        super(new PriorityQueue(Comparator.comparingInt(node -> node.getG() + node.getH())));
     }
 
     @Override
