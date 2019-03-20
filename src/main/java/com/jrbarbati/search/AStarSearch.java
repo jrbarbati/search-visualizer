@@ -21,7 +21,7 @@ public class AStarSearch extends Search
 
     protected int manhattanDistance(Node startNode, Node endNode)
     {
-        return (endNode.getCoordinate().x() - startNode.getCoordinate().x())
-                + (endNode.getCoordinate().y() - startNode.getCoordinate().y());
+        return Math.abs(endNode.getCoordinate().x() - startNode.getCoordinate().x())
+                + Math.abs(endNode.getCoordinate().y() - startNode.getCoordinate().y());
     }
 }

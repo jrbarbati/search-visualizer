@@ -31,6 +31,7 @@ public class SearchTest
         Search.MIN_BOUND = 0;
 
         search.setStartNode(new Node(0, 0,  0,  0));
+        search.addWallNode (new Node(1, 1, 20, 20));
         search.setEndNode  (new Node(2, 2, 40, 40));
     }
 

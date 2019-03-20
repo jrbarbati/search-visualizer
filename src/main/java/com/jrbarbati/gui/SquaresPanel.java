@@ -4,6 +4,7 @@ import com.jrbarbati.gui.exception.MissingCriticalNodeException;
 import com.jrbarbati.path.Coordinate;
 import com.jrbarbati.path.Node;
 import com.jrbarbati.search.Search;
+import com.jrbarbati.search.fringe.Fringe;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,19 +33,20 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
     {
         try
         {
-            if (!getSearchAlgorithm().isDone())
+            if ("Clear".equals(e.getActionCommand()))
             {
-                getSearchAlgorithm().executeIteration();
-            }
-            else if (getSearchAlgorithm().pathFound())
-            {
-                timer.stop();
+                Fringe fringe = getSearchAlgorithm().getFringe();
+                fringe.clear();
+
+                getSearchAlgorithm().reset();
+
+                getSearchAlgorithm().setFringe(fringe);
             }
             else if ("Run".equals(e.getActionCommand()))
             {
                 if (!getSearchAlgorithm().isReady())
                     throw new MissingCriticalNodeException(
-                            String.format("Missing node needed to run: startNode: %s \t endNode: %s",
+                            String.format("Missing node needed to run\n\tstartNode: %s\n\t endNode: %s",
                                     getSearchAlgorithm().getStartNode(),
                                     getSearchAlgorithm().getEndNode()
                             )
@@ -53,21 +55,31 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
                 timer.start();
                 getSearchAlgorithm().executeIteration();
             }
+            else if (!getSearchAlgorithm().isDone())
+            {
+                getSearchAlgorithm().executeIteration();
+            }
+            else if (getSearchAlgorithm().pathFound())
+            {
+                timer.stop();
+            }
+            else if (getSearchAlgorithm().noPathPossible())
+            {
+                timer.stop();
+                JOptionPane.showMessageDialog(this, "No path is possible!", "Done!", JOptionPane.INFORMATION_MESSAGE);
+            }
 
             repaint();
         }
-        catch (MissingCriticalNodeException mcne)
-        {
-            throw mcne;
-        }
         catch (Exception ex)
         {
+            JOptionPane.showMessageDialog(this, String.format("Unable to continue.\n%s", ex.getMessage()), "Error!", JOptionPane.ERROR_MESSAGE);
             ex.printStackTrace();
         }
     }
 
     @Override
-    public void mousePressed(MouseEvent e)
+    public void mouseClicked(MouseEvent e)
     {
         draw(e);
     }
@@ -79,15 +91,9 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
     }
 
     @Override
-    public void keyPressed(KeyEvent e)
+    public void keyTyped(KeyEvent e)
     {
         pressedKey = e.getKeyChar();
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e)
-    {
-        pressedKey = 0;
     }
 
     @Override
@@ -136,6 +142,13 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
 
         boolean leftMousePressed = SwingUtilities.isLeftMouseButton(e);
 
+        System.out.println();
+        System.out.printf("Left Mouse? %s\n", leftMousePressed);
+        System.out.printf("Key:        %s\n", pressedKey);
+        System.out.printf("Start Node? %s\n", shouldModifyStartNode());
+        System.out.printf("End Node?   %s\n", shouldModifyEndNode());
+        System.out.println();
+
         if (shouldModifyStartNode())
             getSearchAlgorithm().setStartNode(leftMousePressed ? new Node(coordinate) : null);
         else if (shouldModifyEndNode())
@@ -147,9 +160,9 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
         repaint();
     }
 
-    private boolean shouldModifyEndNode()
+    protected Coordinate calculateNodeCoordinate(int x, int y)
     {
-        return pressedKey == 'e';
+        return new Coordinate(x / NODE_SIZE, y / NODE_SIZE, calibrate(x, NODE_SIZE), calibrate(y, NODE_SIZE));
     }
 
     private boolean shouldModifyStartNode()
@@ -157,9 +170,9 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
         return pressedKey == 's';
     }
 
-    protected Coordinate calculateNodeCoordinate(int x, int y)
+    private boolean shouldModifyEndNode()
     {
-        return new Coordinate(x / NODE_SIZE, y / NODE_SIZE, calibrate(x, NODE_SIZE), calibrate(y, NODE_SIZE));
+        return pressedKey == 'e';
     }
 
     private int calibrate(int value, int base) {
@@ -177,10 +190,7 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {}
-
-    @Override
-    public void mouseClicked(MouseEvent e) {}
+    public void mousePressed(MouseEvent e) {}
 
     @Override
     public void mouseReleased(MouseEvent e) {}
@@ -193,4 +203,10 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
 
     @Override
     public void mouseMoved(MouseEvent e) {}
+
+    @Override
+    public void keyPressed(KeyEvent e) {}
+
+    @Override
+    public void keyReleased(KeyEvent e) {}
 }

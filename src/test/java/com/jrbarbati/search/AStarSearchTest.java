@@ -17,8 +17,12 @@ public class AStarSearchTest
                 new Node(0, 1, 0, 0)
         ));
         assertEquals(16, aStarSearch.manhattanDistance(
-                new Node(0, 0, 0, 0),
+                new Node( 0, 0, 0, 0),
                 new Node(13, 3, 0, 0)
+        ));
+        assertEquals(16, aStarSearch.manhattanDistance(
+                new Node(13, 3, 0, 0),
+                new Node( 0, 0, 0, 0)
         ));
     }
 }

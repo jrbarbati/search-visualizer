@@ -34,6 +34,9 @@ public class Gui
         JButton run = new JButton("Run");
         run.addActionListener(squaresPanel);
 
+        JButton clear = new JButton("Clear");
+        clear.addActionListener(squaresPanel);
+
         JRadioButton dfs = new JRadioButton("DFS");
         JRadioButton bfs = new JRadioButton("BFS");
         JRadioButton ucs = new JRadioButton("UCS");
@@ -48,7 +51,7 @@ public class Gui
         radioButtons.addAll(Arrays.asList(dfs, bfs, ucs, aStar));
 
         addActionListeners(dfs, bfs, ucs, aStar);
-        addTo(inputPanel, run, dfs, bfs, ucs, aStar);
+        addTo(inputPanel, run, dfs, bfs, ucs, aStar, clear);
 
         squaresPanel.add(inputPanel, BorderLayout.SOUTH);
 

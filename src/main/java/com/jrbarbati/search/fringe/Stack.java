@@ -2,22 +2,29 @@ package com.jrbarbati.search.fringe;
 
 import com.jrbarbati.path.Node;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class Stack implements Fringe
 {
-    java.util.Stack<Node> stack = new java.util.Stack<>();
+    private ArrayList<Node> stack = new ArrayList<>();
 
     @Override
     public void push(Node node)
     {
-        stack.push(node);
+        stack.add(node);
     }
 
     @Override
     public Node pop()
     {
-        return stack.pop();
+        return stack.remove(stack.size() - 1);
+    }
+
+    @Override
+    public void clear()
+    {
+        stack.clear();
     }
 
     @Override

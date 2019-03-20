@@ -2,13 +2,12 @@ package com.jrbarbati.search.fringe;
 
 import com.jrbarbati.path.Node;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
-import java.util.PriorityQueue;
 
 public class Queue implements Fringe
 {
-    PriorityQueue<Node> queue = new PriorityQueue<>((o1, o2) -> 0);
+    private ArrayList<Node> queue = new ArrayList<>();
 
     @Override
     public void push(Node node)
@@ -19,7 +18,13 @@ public class Queue implements Fringe
     @Override
     public Node pop()
     {
-        return queue.poll();
+        return queue.remove(0);
+    }
+
+    @Override
+    public void clear()
+    {
+        queue.clear();
     }
 
     @Override

@@ -27,6 +27,12 @@ public class PriorityQueue implements Fringe
     }
 
     @Override
+    public void clear()
+    {
+        priorityQueue.clear();
+    }
+
+    @Override
     public boolean isEmpty()
     {
         return priorityQueue.isEmpty();

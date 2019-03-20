@@ -44,7 +44,7 @@ public class Coordinate
 
     @Override
     public boolean equals(Object that) {
-        return that instanceof Coordinate && hashCode() == that.hashCode();
+        return that instanceof Coordinate && this.hashCode() == that.hashCode();
     }
 
     /**

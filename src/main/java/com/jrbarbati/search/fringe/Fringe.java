@@ -11,10 +11,12 @@ public interface Fringe
     void push(Node node);
     Node pop();
     boolean isEmpty();
+    void clear();
     Collection<Node> getFringe();
 
     default List<Node> asList()
     {
         return new ArrayList<>(getFringe());
     }
+
 }

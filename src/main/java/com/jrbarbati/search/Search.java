@@ -7,10 +7,7 @@ import com.jrbarbati.path.Path;
 import com.jrbarbati.search.fringe.Fringe;
 import com.jrbarbati.search.move.Move;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public abstract class Search
 {
@@ -20,7 +17,7 @@ public abstract class Search
     private Path path;
     private Node startNode;
     private Node endNode;
-    protected static int MAX_BOUND = 100;
+    protected static int MAX_BOUND = 50;
     protected static int MIN_BOUND = 0;
 
     public Search(Fringe fringe)
@@ -47,7 +44,7 @@ public abstract class Search
 
         for (Node node : validMoves(currentNode))
         {
-            if (getExplored().contains(node))
+            if (getExplored().contains(node) || getFringe().asList().contains(node))
                 continue;
 
             node.setParent(currentNode);
@@ -145,10 +142,12 @@ public abstract class Search
 
     public void reset()
     {
-        wall = null;
+        startNode = null;
+        wall = new HashSet<>();
         fringe = null;
-        explored = null;
+        explored = new HashSet<>();
         path = null;
+        endNode = null;
     }
 
     public Fringe getFringe()
@@ -211,7 +210,7 @@ public abstract class Search
         return startNode != null && endNode != null;
     }
 
-    protected void setFringe(Fringe fringe)
+    public void setFringe(Fringe fringe)
     {
         this.fringe = fringe;
     }
