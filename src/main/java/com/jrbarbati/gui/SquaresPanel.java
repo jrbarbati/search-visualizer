@@ -55,6 +55,14 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
                 timer.start();
                 getSearchAlgorithm().executeIteration();
             }
+            else if ("Start".equals(e.getActionCommand()))
+            {
+                timer.start();
+            }
+            else if ("Stop".equals(e.getActionCommand()))
+            {
+                timer.stop();
+            }
             else if (!getSearchAlgorithm().isDone())
             {
                 getSearchAlgorithm().executeIteration();
@@ -93,6 +101,7 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
     @Override
     public void keyTyped(KeyEvent e)
     {
+        System.out.printf("WOAH You Typed: %s\n", e.getKeyChar());
         pressedKey = e.getKeyChar();
     }
 

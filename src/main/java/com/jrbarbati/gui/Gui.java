@@ -31,27 +31,24 @@ public class Gui
         JPanel inputPanel = new JPanel();
         inputPanel.setBorder(new LineBorder(Color.BLACK));
 
-        JButton run = new JButton("Run");
-        run.addActionListener(squaresPanel);
-
-        JButton clear = new JButton("Clear");
-        clear.addActionListener(squaresPanel);
-
-        JRadioButton dfs = new JRadioButton("DFS");
-        JRadioButton bfs = new JRadioButton("BFS");
-        JRadioButton ucs = new JRadioButton("UCS");
-        JRadioButton aStar = new JRadioButton("A*");
-
-        dfs.setName("DFS");
-        dfs.setSelected(true);
-        bfs.setName("BFS");
-        ucs.setName("UCS");
-        aStar.setName("ASTAR");
+        JRadioButton dfs   = createRadioButton("DFS", "DFS"  , true);
+        JRadioButton bfs   = createRadioButton("BFS", "BFS"  , false);
+        JRadioButton ucs   = createRadioButton("UCS", "UCS"  , false);
+        JRadioButton aStar = createRadioButton("A*" , "ASTAR", false);
 
         radioButtons.addAll(Arrays.asList(dfs, bfs, ucs, aStar));
 
         addActionListeners(dfs, bfs, ucs, aStar);
-        addTo(inputPanel, run, dfs, bfs, ucs, aStar, clear);
+        addTo(inputPanel,
+                createButton("Run"),
+                createButton("Start"),
+                createButton("Stop"),
+                dfs,
+                bfs,
+                ucs,
+                aStar,
+                createButton("Clear")
+        );
 
         squaresPanel.add(inputPanel, BorderLayout.SOUTH);
 
@@ -59,6 +56,21 @@ public class Gui
         mainFrame.setPreferredSize(new Dimension(1000, 1000));
         mainFrame.pack();
         mainFrame.setLocationRelativeTo(null);
+    }
+
+    private JRadioButton createRadioButton(String label, String name, boolean isSelected)
+    {
+        JRadioButton radioButton = new JRadioButton(label);
+        radioButton.setName(name);
+        radioButton.setSelected(isSelected);
+        return radioButton;
+    }
+
+    private JButton createButton(String text)
+    {
+        JButton button = new JButton(text);
+        button.addActionListener(squaresPanel);
+        return button;
     }
 
     private void addTo(JPanel panel, java.awt.Component... components)
