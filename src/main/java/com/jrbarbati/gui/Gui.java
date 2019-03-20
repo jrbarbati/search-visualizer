@@ -34,14 +34,6 @@ public class Gui
         JButton run = new JButton("Run");
         run.addActionListener(squaresPanel);
 
-        JSlider speed = new JSlider(0, 1000);
-        speed.setValue(squaresPanel.getSpeed());
-        speed.addChangeListener(changeEvent -> {
-            speed.setValue(((JSlider) changeEvent.getSource()).getValue());
-            squaresPanel.setSpeed(speed.getValue());
-            squaresPanel.repaint();
-        });
-
         JRadioButton dfs = new JRadioButton("DFS");
         JRadioButton bfs = new JRadioButton("BFS");
         JRadioButton ucs = new JRadioButton("UCS");
@@ -56,7 +48,7 @@ public class Gui
         radioButtons.addAll(Arrays.asList(dfs, bfs, ucs, aStar));
 
         addActionListeners(dfs, bfs, ucs, aStar);
-        add(inputPanel, run, speed, dfs, bfs, ucs, aStar);
+        add(inputPanel, run, dfs, bfs, ucs, aStar);
 
         squaresPanel.add(inputPanel, BorderLayout.SOUTH);
 

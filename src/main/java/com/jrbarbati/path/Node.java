@@ -1,7 +1,5 @@
 package com.jrbarbati.path;
 
-import java.util.Objects;
-
 public class Node
 {
     private Coordinate coordinate;
@@ -62,7 +60,7 @@ public class Node
     @Override
     public int hashCode()
     {
-        return Objects.hash(coordinate);
+        return coordinate.hashCode();
     }
 
     @Override

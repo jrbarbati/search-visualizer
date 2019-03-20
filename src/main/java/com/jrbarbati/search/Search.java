@@ -100,7 +100,8 @@ public abstract class Search
         return inBounds(potentialNode) && !getWallNodes().contains(potentialNode);
     }
 
-    protected boolean inBounds(Node potentialNode) {
+    protected boolean inBounds(Node potentialNode)
+    {
         return potentialNode.getCoordinate().x() >= 0 && potentialNode.getCoordinate().y() >= 0
                 && potentialNode.getCoordinate().x() < 50 && potentialNode.getCoordinate().y() < 50;
     }

@@ -14,11 +14,8 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
 {
     private char pressedKey = 0;
     public static final int NODE_SIZE = 20;
-    private int speed;
     private Search searchAlgorithm;
     private Timer timer;
-
-    private static final int MAX_WAIT_TIME = 1000;
 
     public SquaresPanel()
     {
@@ -27,8 +24,7 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
         addMouseMotionListener(this);
         setFocusTraversalKeysEnabled(false);
         setFocusable(true);
-        timer = new Timer(10, this);
-        speed = 50;
+        timer = new Timer(75, this);
     }
 
     @Override
@@ -71,6 +67,30 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
     }
 
     @Override
+    public void mousePressed(MouseEvent e)
+    {
+        draw(e);
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e)
+    {
+        draw(e);
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e)
+    {
+        pressedKey = e.getKeyChar();
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e)
+    {
+        pressedKey = 0;
+    }
+
+    @Override
     public void paintComponent(Graphics g)
     {
         super.paintComponent(g);
@@ -110,24 +130,6 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
         g.fillRect(node.getCoordinate().rawX(), node.getCoordinate().rawY(), NODE_SIZE, NODE_SIZE);
     }
 
-    @Override
-    public void keyTyped(KeyEvent e) {}
-
-    @Override
-    public void keyPressed(KeyEvent e)
-    {
-        pressedKey = e.getKeyChar();
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e)
-    {
-        pressedKey = 0;
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {}
-
     private void draw(MouseEvent e)
     {
         Coordinate coordinate = calculateNodeCoordinate(e.getX(), e.getY());
@@ -151,11 +153,13 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
         repaint();
     }
 
-    private boolean shouldModifyEndNode() {
+    private boolean shouldModifyEndNode()
+    {
         return pressedKey == 'e';
     }
 
-    private boolean shouldModifyStartNode() {
+    private boolean shouldModifyStartNode()
+    {
         return pressedKey == 's';
     }
 
@@ -168,11 +172,21 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
         return value - (value % base);
     }
 
-    @Override
-    public void mousePressed(MouseEvent e)
+    public Search getSearchAlgorithm()
     {
-        draw(e);
+        return searchAlgorithm;
     }
+
+    public void setSearchAlgorithm(Search searchAlgorithm)
+    {
+        this.searchAlgorithm = searchAlgorithm;
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {}
+
+    @Override
+    public void mouseClicked(MouseEvent e) {}
 
     @Override
     public void mouseReleased(MouseEvent e) {}
@@ -184,42 +198,5 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
     public void mouseExited(MouseEvent e) {}
 
     @Override
-    public void mouseDragged(MouseEvent e)
-    {
-        draw(e);
-    }
-
-    @Override
     public void mouseMoved(MouseEvent e) {}
-
-    public int getSpeed()
-    {
-        return speed;
-    }
-
-    public void setSpeed(int value)
-    {
-        this.speed = value;
-
-        if (value == 0)
-        {
-            timer.stop();
-            return;
-        }
-
-        if (!timer.isRunning())
-            timer.start();
-
-        timer.setDelay(MAX_WAIT_TIME - value);
-    }
-
-    public Search getSearchAlgorithm()
-    {
-        return searchAlgorithm;
-    }
-
-    public void setSearchAlgorithm(Search searchAlgorithm)
-    {
-        this.searchAlgorithm = searchAlgorithm;
-    }
 }
