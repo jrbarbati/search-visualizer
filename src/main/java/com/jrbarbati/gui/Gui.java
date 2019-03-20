@@ -1,5 +1,6 @@
 package com.jrbarbati.gui;
 
+import com.jrbarbati.path.Node;
 import com.jrbarbati.search.DepthFirstSearch;
 import com.jrbarbati.search.factory.SearchFactory;
 import org.springframework.stereotype.Component;
@@ -11,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class Gui
@@ -19,8 +21,6 @@ public class Gui
     private SquaresPanel squaresPanel = new SquaresPanel();
     private List<JRadioButton> radioButtons = new ArrayList<>();
     private SearchFactory searchFactory = new SearchFactory();
-    private static final long MAX_WAIT_TIME = 3000L;
-    private static final long MIN_WAIT_TIME = 0L;
 
     public void create()
     {
@@ -32,18 +32,13 @@ public class Gui
         inputPanel.setBorder(new LineBorder(Color.BLACK));
 
         JButton run = new JButton("Run");
-        run.addActionListener(actionListener -> radioButtons.forEach(radioButton -> {
-            if (radioButton.isSelected())
-                squaresPanel.setSearchAlgorithm(searchFactory.getSearch(radioButton.getActionCommand()));
-        }));
+        run.addActionListener(squaresPanel);
 
-        JSlider speed = new JSlider(0, 100);
+        JSlider speed = new JSlider(0, 1000);
         speed.setValue(squaresPanel.getSpeed());
-
         speed.addChangeListener(changeEvent -> {
             speed.setValue(((JSlider) changeEvent.getSource()).getValue());
             squaresPanel.setSpeed(speed.getValue());
-            squaresPanel.getSearchAlgorithm().setWaitTimeMillis(calculateWaitTime(speed.getValue()));
             squaresPanel.repaint();
         });
 
@@ -53,24 +48,15 @@ public class Gui
         JRadioButton aStar = new JRadioButton("A*");
 
         dfs.setName("DFS");
+        dfs.setSelected(true);
         bfs.setName("BFS");
         ucs.setName("UCS");
         aStar.setName("ASTAR");
 
         radioButtons.addAll(Arrays.asList(dfs, bfs, ucs, aStar));
 
-        dfs.addActionListener(createActionListenerFor(dfs));
-        dfs.setSelected(true);
-        bfs.addActionListener(createActionListenerFor(bfs));
-        ucs.addActionListener(createActionListenerFor(ucs));
-        aStar.addActionListener(createActionListenerFor(aStar));
-
-        inputPanel.add(run);
-        inputPanel.add(speed);
-        inputPanel.add(dfs);
-        inputPanel.add(bfs);
-        inputPanel.add(ucs);
-        inputPanel.add(aStar);
+        addActionListeners(dfs, bfs, ucs, aStar);
+        add(inputPanel, run, speed, dfs, bfs, ucs, aStar);
 
         squaresPanel.add(inputPanel, BorderLayout.SOUTH);
 
@@ -80,12 +66,10 @@ public class Gui
         mainFrame.setLocationRelativeTo(null);
     }
 
-    protected long calculateWaitTime(int value)
+    private void add(JPanel panel, java.awt.Component... components)
     {
-        if (value == 0)
-            return 0;
-
-        return (long) ((MAX_WAIT_TIME - MIN_WAIT_TIME) * (.01d * value));
+        for (java.awt.Component component : components)
+            panel.add(component);
     }
 
     /**
@@ -104,10 +88,26 @@ public class Gui
                 radioButton.setSelected(false);
 
             if (squaresPanel.getSearchAlgorithm().isDone())
+            {
+                Node startNode = squaresPanel.getSearchAlgorithm().getStartNode();
+                Node endNode = squaresPanel.getSearchAlgorithm().getEndNode();
+                Set<Node> wallNodes = squaresPanel.getSearchAlgorithm().getWallNodes();
+
                 squaresPanel.setSearchAlgorithm(searchFactory.getSearch(
                         button.isSelected() ? button.getName() : "DFS"
                 ));
+
+                squaresPanel.getSearchAlgorithm().setStartNode(startNode);
+                squaresPanel.getSearchAlgorithm().setEndNode(endNode);
+                squaresPanel.getSearchAlgorithm().setWallNodes(wallNodes);
+            }
         });
+    }
+
+    private void addActionListeners(JRadioButton... components)
+    {
+        for(JRadioButton component : components)
+            component.addActionListener(createActionListenerFor(component));
     }
 
     public void setVisible(boolean visible)

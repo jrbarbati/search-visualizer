@@ -8,10 +8,7 @@ public class UniformCostSearch extends Search
 {
     public UniformCostSearch()
     {
-        // TODO: Write comparator for PQ
-        super(new PriorityQueue((obj1, obj2) -> {
-            return 0;
-        }));
+        super(new PriorityQueue((obj1, obj2) -> Integer.compare(obj2.getG(), obj1.getG())));
     }
 
     @Override

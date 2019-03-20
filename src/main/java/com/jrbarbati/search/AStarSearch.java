@@ -8,10 +8,7 @@ public class AStarSearch extends Search
 {
     public AStarSearch()
     {
-        // TODO: Write comparator for PQ
-        super(new PriorityQueue((obj1, obj2) -> {
-            return 0;
-        }));
+        super(new PriorityQueue((obj1, obj2) -> Integer.compare(obj2.getG() + obj2.getH(), obj1.getG() + obj1.getH())));
     }
 
     @Override

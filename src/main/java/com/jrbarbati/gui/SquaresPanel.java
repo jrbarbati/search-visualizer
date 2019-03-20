@@ -1,9 +1,9 @@
 package com.jrbarbati.gui;
 
+import com.jrbarbati.gui.exception.MissingCriticalNodeException;
 import com.jrbarbati.path.Coordinate;
 import com.jrbarbati.path.Node;
 import com.jrbarbati.search.Search;
-import com.jrbarbati.search.fringe.Fringe;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,6 +16,9 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
     public static final int NODE_SIZE = 20;
     private int speed;
     private Search searchAlgorithm;
+    private Timer timer;
+
+    private static final int MAX_WAIT_TIME = 1000;
 
     public SquaresPanel()
     {
@@ -24,7 +27,47 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
         addMouseMotionListener(this);
         setFocusTraversalKeysEnabled(false);
         setFocusable(true);
+        timer = new Timer(10, this);
         speed = 50;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e)
+    {
+        try
+        {
+            if (!getSearchAlgorithm().isDone())
+            {
+                getSearchAlgorithm().executeIteration();
+            }
+            else if (getSearchAlgorithm().pathFound())
+            {
+                timer.stop();
+            }
+            else if ("Run".equals(e.getActionCommand()))
+            {
+                if (!getSearchAlgorithm().isReady())
+                    throw new MissingCriticalNodeException(
+                            String.format("Missing node needed to run: startNode: %s \t endNode: %s",
+                                    getSearchAlgorithm().getStartNode(),
+                                    getSearchAlgorithm().getEndNode()
+                            )
+                    );
+                getSearchAlgorithm().setup();
+                timer.start();
+                getSearchAlgorithm().executeIteration();
+            }
+
+            repaint();
+        }
+        catch (MissingCriticalNodeException mcne)
+        {
+            throw mcne;
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
     }
 
     @Override
@@ -65,23 +108,6 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
 
         g.setColor(color);
         g.fillRect(node.getCoordinate().rawX(), node.getCoordinate().rawY(), NODE_SIZE, NODE_SIZE);
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e)
-    {
-        try
-        {
-            if (e.getActionCommand() == null)
-                return;
-
-            if ("run".equals(e.getActionCommand()))
-                getSearchAlgorithm().execute();
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
     }
 
     @Override
@@ -174,6 +200,17 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
     public void setSpeed(int value)
     {
         this.speed = value;
+
+        if (value == 0)
+        {
+            timer.stop();
+            return;
+        }
+
+        if (!timer.isRunning())
+            timer.start();
+
+        timer.setDelay(MAX_WAIT_TIME - value);
     }
 
     public Search getSearchAlgorithm()

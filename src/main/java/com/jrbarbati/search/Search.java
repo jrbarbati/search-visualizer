@@ -17,11 +17,9 @@ public abstract class Search
     private Fringe fringe;
     private Set<Node> explored;
     private Set<Node> wall;
-    private boolean isRunning;
     private Path path;
     private Node startNode;
     private Node endNode;
-    private long waitTimeMillis;
 
     public Search(Fringe fringe)
     {
@@ -30,52 +28,46 @@ public abstract class Search
 
     protected abstract int calculateHeuristic(Node currentNode, Node endNode);
 
-    public Path execute() throws Exception
+    public void setup()
     {
-        isRunning = true;
-
-        fringe.push(startNode);
-
-        while (!fringe.isEmpty())
-        {
-            waitFor(waitTimeMillis);
-            
-            Node currentNode = fringe.pop();
-
-            if (currentNode.equals(endNode))
-                return buildPath(startNode, currentNode);
-
-            for (Node node : validMoves(currentNode))
-            {
-                if (explored.contains(node))
-                    continue;
-
-                node.setG(calculateTotalCost(startNode, node));
-                node.setH(calculateHeuristic(node, endNode));
-
-                fringe.push(node);
-            }
-
-            explored.add(currentNode);
-        }
-
-        if (noPathPossible())
-            isRunning = false;
-
-        return null;
+        getFringe().push(startNode);
     }
 
-    private Path buildPath(Node startNode, Node endNode)
+    public void executeIteration() throws Exception
+    {
+        Node currentNode = fringe.pop();
+
+        if (currentNode.equals(endNode))
+        {
+            setPath(buildPath(startNode, currentNode));
+            return;
+        }
+
+        for (Node node : validMoves(currentNode))
+        {
+            if (getExplored().contains(node))
+                continue;
+
+            node.setParent(currentNode);
+            node.setG(calculateTotalCost(startNode, node));
+            node.setH(calculateHeuristic(node, endNode));
+
+            getFringe().push(node);
+        }
+
+        getExplored().add(currentNode);
+    }
+
+    protected Path buildPath(Node startNode, Node endNode)
     {
         Path path = new Path();
         Node currentNode = endNode;
 
-        do
+        while (currentNode != startNode.getParent())
         {
             path.add(currentNode);
             currentNode = currentNode.getParent();
         }
-        while (currentNode.hasParent());
 
         return path;
     }
@@ -96,16 +88,27 @@ public abstract class Search
 
             Node potentialNode = new Node(potentialCoordinate);
 
-            if (!getWallNodes().contains(potentialNode))
+            if (isValid(potentialNode))
                 validNodes.add(potentialNode);
         }
 
         return validNodes;
     }
 
+    private boolean isValid(Node potentialNode)
+    {
+        return inBounds(potentialNode) && !getWallNodes().contains(potentialNode);
+    }
+
+    protected boolean inBounds(Node potentialNode) {
+        return potentialNode.getCoordinate().x() >= 0 && potentialNode.getCoordinate().y() >= 0
+                && potentialNode.getCoordinate().x() < 50 && potentialNode.getCoordinate().y() < 50;
+    }
+
     private int calculateTotalCost(Node startNode, Node endNode)
     {
-        return buildPath(startNode, endNode).size();
+        Path path = buildPath(startNode, endNode);
+        return path.size() - 1;
     }
 
     public void addWallNode(Node node)
@@ -132,12 +135,12 @@ public abstract class Search
     {
         return noPathPossible() || pathFound();
     }
-    
-    private void waitFor(long waitTimeMillis) 
+
+    private void waitFor(long waitTimeMillis)
     {
-        try 
+        try
         {
-            Thread.sleep(waitTimeMillis);        
+            Thread.sleep(waitTimeMillis);
         }
         catch (Exception e)
         {
@@ -174,9 +177,19 @@ public abstract class Search
         return wall;
     }
 
+    public void setWallNodes(Set<Node> nodes)
+    {
+        this.wall = nodes;
+    }
+
     public Path getPath()
     {
         return path;
+    }
+
+    private void setPath(Path path)
+    {
+        this.path = path;
     }
 
     public Node getStartNode()
@@ -198,9 +211,8 @@ public abstract class Search
     {
         this.endNode = node;
     }
-    
-    public void setWaitTimeMillis(long waitTimeMillis)
-    {
-        this.waitTimeMillis = waitTimeMillis;
+
+    public boolean isReady() {
+        return startNode != null && endNode != null;
     }
 }
