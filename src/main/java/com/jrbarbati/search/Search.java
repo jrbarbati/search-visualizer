@@ -35,7 +35,7 @@ public abstract class Search
         getFringe().push(startNode);
     }
 
-    public void executeIteration() throws Exception
+    public void executeIteration()
     {
         Node currentNode = fringe.pop();
 
@@ -141,18 +141,6 @@ public abstract class Search
     public boolean isDone()
     {
         return noPathPossible() || pathFound();
-    }
-
-    private void waitFor(long waitTimeMillis)
-    {
-        try
-        {
-            Thread.sleep(waitTimeMillis);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
     }
 
     public void reset()

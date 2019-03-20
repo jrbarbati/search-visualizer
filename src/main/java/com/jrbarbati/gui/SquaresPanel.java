@@ -136,10 +136,6 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
 
         boolean leftMousePressed = SwingUtilities.isLeftMouseButton(e);
 
-        System.out.printf("Left Mouse? %s\n", leftMousePressed);
-        System.out.printf("Start Node? %s\n", shouldModifyStartNode());
-        System.out.printf("End Node? %s\n", shouldModifyEndNode());
-
         if (shouldModifyStartNode())
             getSearchAlgorithm().setStartNode(leftMousePressed ? new Node(coordinate) : null);
         else if (shouldModifyEndNode())
