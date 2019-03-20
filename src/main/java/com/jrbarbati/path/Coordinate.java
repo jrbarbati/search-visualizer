@@ -19,32 +19,32 @@ public class Coordinate
 
     public int x()
     {
-        return this.x;
+        return x;
     }
 
     public int y()
     {
-        return this.y;
+        return y;
     }
 
     public int rawX()
     {
-        return this.rawX;
+        return rawX;
     }
 
     public int rawY()
     {
-        return this.rawY;
+        return rawY;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.x, this.y);
+        return Objects.hash(x, y);
     }
 
     @Override
     public boolean equals(Object that) {
-        return that instanceof Coordinate && this.hashCode() == that.hashCode();
+        return that instanceof Coordinate && hashCode() == that.hashCode();
     }
 
     /*
@@ -53,6 +53,6 @@ public class Coordinate
     @Override
     public String toString()
     {
-        return String.format("(%d, %d)", this.x, this.y);
+        return String.format("(%d, %d)", x, y);
     }
 }

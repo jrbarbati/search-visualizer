@@ -46,7 +46,7 @@ public class Node
 
     public Node getParent()
     {
-        return this.parent;
+        return parent;
     }
 
     public void setParent(Node parent)
@@ -54,15 +54,20 @@ public class Node
         this.parent = parent;
     }
 
+    public boolean hasParent()
+    {
+        return parent != null;
+    }
+
     @Override
     public int hashCode()
     {
-        return Objects.hash(this.coordinate);
+        return Objects.hash(coordinate);
     }
 
     @Override
     public boolean equals(Object that)
     {
-        return that instanceof Node && this.hashCode() == that.hashCode();
+        return that instanceof Node && hashCode() == that.hashCode();
     }
 }

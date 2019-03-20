@@ -1,10 +1,15 @@
 package com.jrbarbati.search;
 
+import com.jrbarbati.gui.SquaresPanel;
+import com.jrbarbati.path.Coordinate;
 import com.jrbarbati.path.Node;
 import com.jrbarbati.path.Path;
 import com.jrbarbati.search.fringe.Fringe;
+import com.jrbarbati.search.move.Move;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public abstract class Search
@@ -16,91 +21,157 @@ public abstract class Search
     private Path path;
     private Node startNode;
     private Node endNode;
-
-    public Search()
-    {
-        this(null);
-    }
+    private long waitTimeMillis;
 
     public Search(Fringe fringe)
     {
         this.fringe = fringe;
     }
 
-    public void execute()
-    {
-        this.isRunning = true;
+    protected abstract int calculateHeuristic(Node currentNode, Node endNode);
 
-        this.fringe.push(this.startNode);
+    public Path execute() throws Exception
+    {
+        isRunning = true;
+
+        fringe.push(startNode);
 
         while (!fringe.isEmpty())
         {
-            Node currentNode = this.fringe.pop();
+            waitFor(waitTimeMillis);
+            
+            Node currentNode = fringe.pop();
+
+            if (currentNode.equals(endNode))
+                return buildPath(startNode, currentNode);
+
+            for (Node node : validMoves(currentNode))
+            {
+                if (explored.contains(node))
+                    continue;
+
+                node.setG(calculateTotalCost(startNode, node));
+                node.setH(calculateHeuristic(node, endNode));
+
+                fringe.push(node);
+            }
+
+            explored.add(currentNode);
         }
 
-        if (this.noPathPossible())
-            this.isRunning = false;
+        if (noPathPossible())
+            isRunning = false;
+
+        return null;
     }
 
-    public int calculateTotalCost(Node startNode, Node currentNode)
+    private Path buildPath(Node startNode, Node endNode)
     {
-        return 0;
+        Path path = new Path();
+        Node currentNode = endNode;
+
+        do
+        {
+            path.add(currentNode);
+            currentNode = currentNode.getParent();
+        }
+        while (currentNode.hasParent());
+
+        return path;
+    }
+
+    private List<Node> validMoves(Node node)
+    {
+        List<Node> validNodes = new ArrayList<>();
+
+        for (Move move : Move.values())
+        {
+            Coordinate coordinate = node.getCoordinate();
+            Coordinate potentialCoordinate = new Coordinate(
+                    coordinate.x() + move.getXOffset(),
+                    coordinate.y() + move.getYOffset(),
+                    (coordinate.x() + move.getXOffset()) * SquaresPanel.NODE_SIZE,
+                    (coordinate.y() + move.getYOffset()) * SquaresPanel.NODE_SIZE
+            );
+
+            Node potentialNode = new Node(potentialCoordinate);
+
+            if (!getWallNodes().contains(potentialNode))
+                validNodes.add(potentialNode);
+        }
+
+        return validNodes;
+    }
+
+    private int calculateTotalCost(Node startNode, Node endNode)
+    {
+        return buildPath(startNode, endNode).size();
     }
 
     public void addWallNode(Node node)
     {
-        this.getWallNodes().add(node);
+        getWallNodes().add(node);
     }
 
     public void removeWallNode(Node node)
     {
-        this.getWallNodes().remove(node);
+        getWallNodes().remove(node);
     }
 
     public boolean pathFound()
     {
-        return this.path != null;
+        return path != null;
     }
 
     public boolean noPathPossible()
     {
-        return this.fringe.isEmpty() && this.path == null;
+        return fringe.isEmpty() && path == null;
     }
 
     public boolean isDone()
     {
         return noPathPossible() || pathFound();
     }
+    
+    private void waitFor(long waitTimeMillis) 
+    {
+        try 
+        {
+            Thread.sleep(waitTimeMillis);        
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
 
     public void reset()
     {
-        this.wall = null;
-        this.fringe = null;
-        this.explored = null;
-        this.path = null;
+        wall = null;
+        fringe = null;
+        explored = null;
+        path = null;
     }
-
-    abstract int calculateHeuristic(Node currentNode, Node endNode);
 
     public Fringe getFringe()
     {
-        return this.fringe;
+        return fringe;
     }
 
     public Set<Node> getExplored()
     {
-        if (this.explored == null)
-            this.explored = new HashSet<>();
+        if (explored == null)
+            explored = new HashSet<>();
 
-        return this.explored;
+        return explored;
     }
 
     public Set<Node> getWallNodes()
     {
-        if (this.wall == null)
-            this.wall = new HashSet<>();
+        if (wall == null)
+            wall = new HashSet<>();
 
-        return this.wall;
+        return wall;
     }
 
     public Path getPath()
@@ -110,7 +181,7 @@ public abstract class Search
 
     public Node getStartNode()
     {
-        return this.startNode;
+        return startNode;
     }
 
     public void setStartNode(Node node)
@@ -120,11 +191,16 @@ public abstract class Search
 
     public Node getEndNode()
     {
-        return this.endNode;
+        return endNode;
     }
 
     public void setEndNode(Node node)
     {
         this.endNode = node;
+    }
+    
+    public void setWaitTimeMillis(long waitTimeMillis)
+    {
+        this.waitTimeMillis = waitTimeMillis;
     }
 }

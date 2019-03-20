@@ -15,7 +15,8 @@ public class UniformCostSearch extends Search
     }
 
     @Override
-    int calculateHeuristic(Node currentNode, Node endNode) {
+    public int calculateHeuristic(Node currentNode, Node endNode)
+    {
         return 0;
     }
 }

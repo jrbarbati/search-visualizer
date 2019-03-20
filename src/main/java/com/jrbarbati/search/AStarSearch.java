@@ -15,8 +15,14 @@ public class AStarSearch extends Search
     }
 
     @Override
-    int calculateHeuristic(Node currentnode, Node endNode)
+    public int calculateHeuristic(Node currentnode, Node endNode)
     {
-        return 0;
+        return manhattanDistance(currentnode, endNode);
+    }
+
+    protected int manhattanDistance(Node startNode, Node endNode)
+    {
+        return (endNode.getCoordinate().x() - startNode.getCoordinate().x())
+                + (endNode.getCoordinate().y() - startNode.getCoordinate().y());
     }
 }

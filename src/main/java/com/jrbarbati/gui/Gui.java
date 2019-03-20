@@ -19,6 +19,8 @@ public class Gui
     private SquaresPanel squaresPanel = new SquaresPanel();
     private List<JRadioButton> radioButtons = new ArrayList<>();
     private SearchFactory searchFactory = new SearchFactory();
+    private static final long MAX_WAIT_TIME = 3000L;
+    private static final long MIN_WAIT_TIME = 0L;
 
     public void create()
     {
@@ -41,6 +43,7 @@ public class Gui
         speed.addChangeListener(changeEvent -> {
             speed.setValue(((JSlider) changeEvent.getSource()).getValue());
             squaresPanel.setSpeed(speed.getValue());
+            squaresPanel.getSearchAlgorithm().setWaitTimeMillis(calculateWaitTime(speed.getValue()));
             squaresPanel.repaint();
         });
 
@@ -77,6 +80,14 @@ public class Gui
         mainFrame.setLocationRelativeTo(null);
     }
 
+    protected long calculateWaitTime(int value)
+    {
+        if (value == 0)
+            return 0;
+
+        return (long) ((MAX_WAIT_TIME - MIN_WAIT_TIME) * (.01d * value));
+    }
+
     /**
      * Default is Depth First Search
      * @param button radio button that was pressed
@@ -101,11 +112,11 @@ public class Gui
 
     public void setVisible(boolean visible)
     {
-        this.mainFrame.setVisible(visible);
+        mainFrame.setVisible(visible);
     }
 
     public void setDefaultCloseOperation(int operation)
     {
-        this.mainFrame.setDefaultCloseOperation(operation);
+        mainFrame.setDefaultCloseOperation(operation);
     }
 }

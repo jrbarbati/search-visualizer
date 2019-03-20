@@ -3,6 +3,7 @@ package com.jrbarbati.gui;
 import com.jrbarbati.path.Coordinate;
 import com.jrbarbati.path.Node;
 import com.jrbarbati.search.Search;
+import com.jrbarbati.search.fringe.Fringe;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,18 +13,18 @@ import java.util.Collection;
 public class SquaresPanel extends JPanel implements ActionListener, MouseListener, MouseMotionListener, KeyListener
 {
     private char pressedKey = 0;
-    private static final int NODE_SIZE = 20;
+    public static final int NODE_SIZE = 20;
     private int speed;
     private Search searchAlgorithm;
 
     public SquaresPanel()
     {
-        this.addMouseListener(this);
-        this.addKeyListener(this);
-        this.addMouseMotionListener(this);
-        this.setFocusTraversalKeysEnabled(false);
-        this.setFocusable(true);
-        this.speed = 50;
+        addMouseListener(this);
+        addKeyListener(this);
+        addMouseMotionListener(this);
+        setFocusTraversalKeysEnabled(false);
+        setFocusable(true);
+        speed = 50;
     }
 
     @Override
@@ -32,22 +33,22 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
         super.paintComponent(g);
 
         drawSquares(g, NODE_SIZE, Color.WHITE);
-        fillInNodes(g, this.getSearchAlgorithm().getWallNodes(), Color.BLACK);
-        fillInNodes(g, this.getSearchAlgorithm().getFringe(), Color.BLUE);
-        fillInNodes(g, this.getSearchAlgorithm().getExplored(), Color.YELLOW);
-        fillInNode(g, this.getSearchAlgorithm().getStartNode(), Color.GREEN);
-        fillInNode(g, this.getSearchAlgorithm().getEndNode(), Color.RED);
+        fillInNodes(g, getSearchAlgorithm().getWallNodes(), Color.BLACK);
+        fillInNodes(g, getSearchAlgorithm().getFringe().asList(), Color.BLUE);
+        fillInNodes(g, getSearchAlgorithm().getExplored(), Color.YELLOW);
+        fillInNode(g, getSearchAlgorithm().getStartNode(), Color.GREEN);
+        fillInNode(g, getSearchAlgorithm().getEndNode(), Color.RED);
 
-        if (this.getSearchAlgorithm().pathFound())
-            fillInNodes(g, this.getSearchAlgorithm().getPath().asList(), Color.CYAN);
+        if (getSearchAlgorithm().pathFound())
+            fillInNodes(g, getSearchAlgorithm().getPath().asList(), Color.CYAN);
     }
 
     private void drawSquares(Graphics g, int size, Color color)
     {
         g.setColor(color);
 
-        for (int y = 0; y < this.getHeight(); y += size)
-            for (int x = 0; x < this.getWidth(); x += size)
+        for (int y = 0; y < getHeight(); y += size)
+            for (int x = 0; x < getWidth(); x += size)
                 g.drawRect(x, y, size, size);
     }
 
@@ -69,11 +70,18 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
     @Override
     public void actionPerformed(ActionEvent e)
     {
-        if (e.getActionCommand() == null)
-            return;
+        try
+        {
+            if (e.getActionCommand() == null)
+                return;
 
-        if ("run".equals(e.getActionCommand()))
-            this.getSearchAlgorithm().execute();
+            if ("run".equals(e.getActionCommand()))
+                getSearchAlgorithm().execute();
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
     }
 
     @Override
@@ -82,13 +90,13 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
     @Override
     public void keyPressed(KeyEvent e)
     {
-        this.pressedKey = e.getKeyChar();
+        pressedKey = e.getKeyChar();
     }
 
     @Override
     public void keyReleased(KeyEvent e)
     {
-        this.pressedKey = 0;
+        pressedKey = 0;
     }
 
     @Override
@@ -100,29 +108,29 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
 
         if (SwingUtilities.isLeftMouseButton(e))
             if (shouldModifyStartNode())
-                this.getSearchAlgorithm().setStartNode(new Node(coordinate));
+                getSearchAlgorithm().setStartNode(new Node(coordinate));
             else if (shouldModifyEndNode())
-                this.getSearchAlgorithm().setEndNode(new Node(coordinate));
+                getSearchAlgorithm().setEndNode(new Node(coordinate));
             else
-                this.getSearchAlgorithm().addWallNode(new Node(coordinate));
+                getSearchAlgorithm().addWallNode(new Node(coordinate));
 
         if (SwingUtilities.isRightMouseButton(e))
             if (shouldModifyStartNode())
-                this.getSearchAlgorithm().setStartNode(null);
+                getSearchAlgorithm().setStartNode(null);
             else if (shouldModifyEndNode())
-                this.getSearchAlgorithm().setEndNode(null);
+                getSearchAlgorithm().setEndNode(null);
             else
-                this.getSearchAlgorithm().removeWallNode(new Node(coordinate));
+                getSearchAlgorithm().removeWallNode(new Node(coordinate));
 
-        this.repaint();
+        repaint();
     }
 
     private boolean shouldModifyEndNode() {
-        return this.pressedKey == 'e';
+        return pressedKey == 'e';
     }
 
     private boolean shouldModifyStartNode() {
-        return this.pressedKey == 's';
+        return pressedKey == 's';
     }
 
     protected Coordinate calculateNodeCoordinate(int x, int y)
@@ -170,7 +178,7 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
 
     public Search getSearchAlgorithm()
     {
-        return this.searchAlgorithm;
+        return searchAlgorithm;
     }
 
     public void setSearchAlgorithm(Search searchAlgorithm)

@@ -2,6 +2,8 @@ package com.jrbarbati.search.fringe;
 
 import com.jrbarbati.path.Node;
 
+import java.util.Collection;
+
 public class Stack implements Fringe
 {
     java.util.Stack<Node> stack = new java.util.Stack<>();
@@ -9,18 +11,24 @@ public class Stack implements Fringe
     @Override
     public void push(Node node)
     {
-        this.stack.push(node);
+        stack.push(node);
     }
 
     @Override
     public Node pop()
     {
-        return this.stack.pop();
+        return stack.pop();
     }
 
     @Override
     public boolean isEmpty()
     {
-        return this.stack.isEmpty();
+        return stack.isEmpty();
+    }
+
+    @Override
+    public Collection<Node> getFringe()
+    {
+        return stack;
     }
 }

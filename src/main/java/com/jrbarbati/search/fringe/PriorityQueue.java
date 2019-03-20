@@ -2,6 +2,7 @@ package com.jrbarbati.search.fringe;
 
 import com.jrbarbati.path.Node;
 
+import java.util.Collection;
 import java.util.Comparator;
 
 public class PriorityQueue implements Fringe
@@ -10,24 +11,30 @@ public class PriorityQueue implements Fringe
 
     public PriorityQueue(Comparator<Node> comparator)
     {
-        this.priorityQueue = new java.util.PriorityQueue<>(comparator);
+        priorityQueue = new java.util.PriorityQueue<>(comparator);
     }
 
     @Override
     public void push(Node node)
     {
-        this.priorityQueue.add(node);
+        priorityQueue.add(node);
     }
 
     @Override
     public Node pop()
     {
-        return this.priorityQueue.poll();
+        return priorityQueue.poll();
     }
 
     @Override
     public boolean isEmpty()
     {
-        return this.priorityQueue.isEmpty();
+        return priorityQueue.isEmpty();
+    }
+
+    @Override
+    public Collection<Node> getFringe()
+    {
+        return priorityQueue;
     }
 }

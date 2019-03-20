@@ -16,32 +16,32 @@ public class Path
 
     public void add(Node node)
     {
-        this.path.add(node);
+        path.add(0, node);
     }
 
     public boolean hasNext()
     {
-        return this.size() > this.currentIndex + 1;
+        return size() > currentIndex + 1;
     }
 
     public Node next()
     {
-        if (this.currentIndex + 1 >= this.size())
+        if (currentIndex + 1 >= size())
             return null;
 
-        return this.path.get(++this.currentIndex);
+        return path.get(++currentIndex);
     }
 
     public List<Node> asList()
     {
-        if (this.path == null)
-            this.path = new ArrayList<>();
+        if (path == null)
+            path = new ArrayList<>();
 
-        return this.path;
+        return path;
     }
 
     public int size()
     {
-        return this.path.size();
+        return path.size();
     }
 }
