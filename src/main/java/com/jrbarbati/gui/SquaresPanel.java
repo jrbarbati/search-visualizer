@@ -106,6 +106,16 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
     }
 
     @Override
+    public void keyPressed(KeyEvent e) {
+        this.keyTyped(e);
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        pressedKey = '\0';
+    }
+
+    @Override
     public void paintComponent(Graphics g)
     {
         super.paintComponent(g);
@@ -212,10 +222,4 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
 
     @Override
     public void mouseMoved(MouseEvent e) {}
-
-    @Override
-    public void keyPressed(KeyEvent e) {}
-
-    @Override
-    public void keyReleased(KeyEvent e) {}
 }
