@@ -57,7 +57,8 @@ public abstract class Search
         getExplored().add(currentNode);
     }
 
-    private boolean isGoal(Node currentNode) {
+    private boolean isGoal(Node currentNode)
+    {
         return currentNode.equals(endNode);
     }
 
@@ -144,7 +145,7 @@ public abstract class Search
     {
         startNode = null;
         wall = new HashSet<>();
-        fringe = null;
+        fringe.clear();
         explored = new HashSet<>();
         path = null;
         endNode = null;
@@ -206,7 +207,8 @@ public abstract class Search
         this.endNode = node;
     }
 
-    public boolean isReady() {
+    public boolean isReady()
+    {
         return startNode != null && endNode != null;
     }
 

@@ -4,7 +4,6 @@ import com.jrbarbati.gui.exception.MissingCriticalNodeException;
 import com.jrbarbati.path.Coordinate;
 import com.jrbarbati.path.Node;
 import com.jrbarbati.search.Search;
-import com.jrbarbati.search.fringe.Fringe;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +12,7 @@ import java.util.Collection;
 
 public class SquaresPanel extends JPanel implements ActionListener, MouseListener, MouseMotionListener, KeyListener
 {
-    private char pressedKey = 0;
+    private char pressedKey = '\0';
     public static final int NODE_SIZE = 20;
     private Search searchAlgorithm;
     private Timer timer;
@@ -34,14 +33,7 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
         try
         {
             if ("Clear".equals(e.getActionCommand()))
-            {
-                Fringe fringe = getSearchAlgorithm().getFringe();
-                fringe.clear();
-
                 getSearchAlgorithm().reset();
-
-                getSearchAlgorithm().setFringe(fringe);
-            }
             else if ("Run".equals(e.getActionCommand()))
             {
                 if (!getSearchAlgorithm().isReady())
@@ -56,21 +48,13 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
                 getSearchAlgorithm().executeIteration();
             }
             else if ("Start".equals(e.getActionCommand()))
-            {
                 timer.start();
-            }
             else if ("Stop".equals(e.getActionCommand()))
-            {
                 timer.stop();
-            }
             else if (!getSearchAlgorithm().isDone())
-            {
                 getSearchAlgorithm().executeIteration();
-            }
             else if (getSearchAlgorithm().pathFound())
-            {
                 timer.stop();
-            }
             else if (getSearchAlgorithm().noPathPossible())
             {
                 timer.stop();
@@ -101,18 +85,8 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
     @Override
     public void keyTyped(KeyEvent e)
     {
-        System.out.printf("WOAH You Typed: %s\n", e.getKeyChar());
+        System.out.printf("Typed: %c\n", e.getKeyChar());
         pressedKey = e.getKeyChar();
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        this.keyTyped(e);
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-        pressedKey = '\0';
     }
 
     @Override
@@ -161,20 +135,14 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
 
         boolean leftMousePressed = SwingUtilities.isLeftMouseButton(e);
 
-        System.out.println();
-        System.out.printf("Left Mouse? %s\n", leftMousePressed);
-        System.out.printf("Key:        %s\n", pressedKey);
-        System.out.printf("Start Node? %s\n", shouldModifyStartNode());
-        System.out.printf("End Node?   %s\n", shouldModifyEndNode());
-        System.out.println();
-
         if (shouldModifyStartNode())
             getSearchAlgorithm().setStartNode(leftMousePressed ? new Node(coordinate) : null);
         else if (shouldModifyEndNode())
             getSearchAlgorithm().setEndNode(leftMousePressed ? new Node(coordinate) : null);
+        else if (leftMousePressed)
+            getSearchAlgorithm().addWallNode(new Node(coordinate));
         else
-            if (leftMousePressed) getSearchAlgorithm().addWallNode(new Node(coordinate));
-            else                  getSearchAlgorithm().removeWallNode(new Node(coordinate));
+            getSearchAlgorithm().removeWallNode(new Node(coordinate));
 
         repaint();
     }
@@ -186,15 +154,22 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
 
     private boolean shouldModifyStartNode()
     {
-        return pressedKey == 's';
+        return pressedKeyIs('s');
     }
+
 
     private boolean shouldModifyEndNode()
     {
-        return pressedKey == 'e';
+        return pressedKeyIs('e');
     }
 
-    private int calibrate(int value, int base) {
+    private boolean pressedKeyIs(char key)
+    {
+        return pressedKey == key;
+    }
+
+    private int calibrate(int value, int base)
+    {
         return value - (value % base);
     }
 
@@ -222,4 +197,10 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
 
     @Override
     public void mouseMoved(MouseEvent e) {}
+
+    @Override
+    public void keyPressed(KeyEvent e) {}
+
+    @Override
+    public void keyReleased(KeyEvent e) {}
 }
