@@ -25,8 +25,6 @@ public abstract class Search
         this.fringe = fringe;
     }
 
-    protected abstract int calculateHeuristic(Node currentNode, Node endNode);
-
     public void setup()
     {
         getFringe().push(startNode);
@@ -103,7 +101,7 @@ public abstract class Search
         return validNodes;
     }
 
-    private boolean isValid(Node potentialNode)
+    protected boolean isValid(Node potentialNode)
     {
         boolean inBounds = inBounds(potentialNode);
         boolean isWall = getWallNodes().contains(potentialNode);
@@ -113,7 +111,7 @@ public abstract class Search
         return inBounds && !isWall;
     }
 
-    protected boolean inBounds(Node potentialNode)
+    private boolean inBounds(Node potentialNode)
     {
         return potentialNode.getCoordinate().x() >= MIN_BOUND && potentialNode.getCoordinate().y() >= MIN_BOUND
                 && potentialNode.getCoordinate().x() < MAX_BOUND && potentialNode.getCoordinate().y() < MAX_BOUND;
@@ -225,4 +223,6 @@ public abstract class Search
     {
         this.fringe = fringe;
     }
+
+    protected abstract int calculateHeuristic(Node currentNode, Node endNode);
 }

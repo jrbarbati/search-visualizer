@@ -10,7 +10,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.Comparator;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class SearchTest
 {
@@ -106,5 +106,82 @@ public class SearchTest
 
         assertEquals(search.getStartNode(), search.getPath().asList().get(0));
         assertEquals(search.getEndNode()  , search.getPath().asList().get(search.getPath().size() - 1));
+    }
+
+
+    @Test
+    public void buildPath()
+    {
+
+    }
+
+    @Test
+    public void isValid()
+    {
+
+    }
+
+    @Test
+    public void pathFound_unstartedSearch()
+    {
+        Search localSearch = new Search(new Stack()) {
+            @Override
+            protected int calculateHeuristic(Node currentNode, Node endNode)
+            {
+                return 0;
+            }
+        };
+
+        assertFalse(localSearch.pathFound());
+    }
+
+    @Test
+    public void pathFound_startedSearch()
+    {
+
+    }
+
+    @Test
+    public void pathFound_finishedSearch_endNodeFound()
+    {
+
+    }
+
+    @Test
+    public void pathFound_finishedSearch_endNodeNotFound()
+    {
+
+    }
+
+    @Test
+    public void noPathPossible_unstartedSearch()
+    {
+        Search localSearch = new Search(new Stack()) {
+            @Override
+            protected int calculateHeuristic(Node currentNode, Node endNode)
+            {
+                return 0;
+            }
+        };
+
+        assertTrue(localSearch.noPathPossible());
+    }
+
+    @Test
+    public void noPathPossible_startedSearch()
+    {
+
+    }
+
+    @Test
+    public void noPathPossbile_finishedSearch_endNodeFound()
+    {
+
+    }
+
+    @Test
+    public void noPathPossbile_finishedSearch_endNodeNotFound()
+    {
+
     }
 }
