@@ -4,17 +4,22 @@ import com.jrbarbati.gui.exception.MissingCriticalNodeException;
 import com.jrbarbati.path.Coordinate;
 import com.jrbarbati.path.Node;
 import com.jrbarbati.search.Search;
+import com.jrbarbati.search.factory.SearchFactory;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 public class SquaresPanel extends JPanel implements ActionListener, MouseListener, MouseMotionListener, KeyListener
 {
     private char pressedKey = '\0';
     public static final int NODE_SIZE = 20;
     private Search searchAlgorithm;
+    private SearchFactory searchFactory = new SearchFactory();
     private Timer timer;
 
     public SquaresPanel()
@@ -24,11 +29,22 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
         addMouseMotionListener(this);
         setFocusTraversalKeysEnabled(false);
         setFocusable(true);
+        requestFocusInWindow();
         timer = new Timer(75, this);
     }
 
     @Override
     public void actionPerformed(ActionEvent e)
+    {
+        if (e.getSource() instanceof JRadioButton)
+            radioButtonListener(e);
+        else
+            searchListener(e);
+
+        requestFocusInWindow();
+    }
+
+    private void searchListener(ActionEvent e)
     {
         try
         {
@@ -38,7 +54,7 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
             {
                 if (!getSearchAlgorithm().isReady())
                     throw new MissingCriticalNodeException(
-                            String.format("Missing node needed to run\n\tstartNode: %s\n\t endNode: %s",
+                            String.format("Missing node needed to run\n\tStart Node: %s\n\t End Node: %s",
                                     getSearchAlgorithm().getStartNode(),
                                     getSearchAlgorithm().getEndNode()
                             )
@@ -67,6 +83,37 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
         {
             JOptionPane.showMessageDialog(this, String.format("Unable to continue.\n%s", ex.getMessage()), "Error!", JOptionPane.ERROR_MESSAGE);
             ex.printStackTrace();
+        }
+    }
+
+    private void  radioButtonListener(ActionEvent e)
+    {
+        JRadioButton clickedRadioButton = (JRadioButton) e.getSource();
+
+        for(JRadioButton radioButton : getRadioButtons())
+        {
+            if (radioButton == clickedRadioButton)
+                continue;
+
+            if (clickedRadioButton.isSelected())
+                radioButton.setSelected(false);
+        }
+
+        if (getSearchAlgorithm().isDone())
+        {
+            Node startNode = getSearchAlgorithm().getStartNode();
+            Node endNode = getSearchAlgorithm().getEndNode();
+            Set<Node> wallNodes = getSearchAlgorithm().getWallNodes();
+
+            setSearchAlgorithm(searchFactory.getSearchByName(
+                    clickedRadioButton.isSelected() ? clickedRadioButton.getName() : "DFS"
+            ));
+
+            System.out.println(getSearchAlgorithm().getClass().getSimpleName());
+
+            getSearchAlgorithm().setStartNode(startNode);
+            getSearchAlgorithm().setEndNode(endNode);
+            getSearchAlgorithm().setWallNodes(wallNodes);
         }
     }
 
@@ -126,20 +173,25 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
             return;
 
         g.setColor(color);
-        g.fillRect(node.getCoordinate().rawX(), node.getCoordinate().rawY(), NODE_SIZE, NODE_SIZE);
+        g.fillRect(
+                node.getCoordinate().rawX() + 1,
+                node.getCoordinate().rawY() + 1,
+                NODE_SIZE - 1,
+                NODE_SIZE - 1
+        );
     }
 
     private void draw(MouseEvent e)
     {
         Coordinate coordinate = calculateNodeCoordinate(e.getX(), e.getY());
 
-        boolean leftMousePressed = SwingUtilities.isLeftMouseButton(e);
+        boolean shouldAddToGrid = SwingUtilities.isLeftMouseButton(e);
 
         if (shouldModifyStartNode())
-            getSearchAlgorithm().setStartNode(leftMousePressed ? new Node(coordinate) : null);
+            getSearchAlgorithm().setStartNode(shouldAddToGrid ? new Node(coordinate) : null);
         else if (shouldModifyEndNode())
-            getSearchAlgorithm().setEndNode(leftMousePressed ? new Node(coordinate) : null);
-        else if (leftMousePressed)
+            getSearchAlgorithm().setEndNode(shouldAddToGrid ? new Node(coordinate) : null);
+        else if (shouldAddToGrid)
             getSearchAlgorithm().addWallNode(new Node(coordinate));
         else
             getSearchAlgorithm().removeWallNode(new Node(coordinate));
@@ -156,7 +208,6 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
     {
         return pressedKeyIs('s');
     }
-
 
     private boolean shouldModifyEndNode()
     {
@@ -181,6 +232,17 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
     public void setSearchAlgorithm(Search searchAlgorithm)
     {
         this.searchAlgorithm = searchAlgorithm;
+    }
+
+    private List<JRadioButton> getRadioButtons()
+    {
+        List<JRadioButton> radioButtons = new ArrayList<>();
+
+        for (Component component : ((JPanel) this.getComponent(0)).getComponents())
+            if (component instanceof JRadioButton)
+                radioButtons.add((JRadioButton) component);
+
+        return radioButtons;
     }
 
     @Override

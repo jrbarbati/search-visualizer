@@ -1,18 +1,14 @@
 package com.jrbarbati.gui;
 
-import com.jrbarbati.path.Node;
 import com.jrbarbati.search.DepthFirstSearch;
-import com.jrbarbati.search.factory.SearchFactory;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 @Component
 public class Gui
@@ -20,7 +16,6 @@ public class Gui
     private JFrame mainFrame = new JFrame("Search Visualizer");
     private SquaresPanel squaresPanel = new SquaresPanel();
     private List<JRadioButton> radioButtons = new ArrayList<>();
-    private SearchFactory searchFactory = new SearchFactory();
 
     public void create()
     {
@@ -31,14 +26,14 @@ public class Gui
         JPanel inputPanel = new JPanel();
         inputPanel.setBorder(new LineBorder(Color.BLACK));
 
-        JRadioButton dfs   = createRadioButton("DFS", "DFS"  , true);
-        JRadioButton bfs   = createRadioButton("BFS", "BFS"  , false);
-        JRadioButton ucs   = createRadioButton("UCS", "UCS"  , false);
-        JRadioButton aStar = createRadioButton("A*" , "ASTAR", false);
+        JRadioButton dfs = createRadioButton("DFS", "DFS", true);
+        JRadioButton bfs = createRadioButton("BFS", "BFS", false);
+        JRadioButton ucs = createRadioButton("UCS", "UCS", false);
+        JRadioButton aStar = createRadioButton("A*", "ASTAR", false);
 
         radioButtons.addAll(Arrays.asList(dfs, bfs, ucs, aStar));
 
-        addActionListeners(dfs, bfs, ucs, aStar);
+        addActionListenerTo(dfs, bfs, ucs, aStar);
         addTo(inputPanel,
                 createButton("Run"),
                 createButton("Start"),
@@ -79,42 +74,10 @@ public class Gui
             panel.add(component);
     }
 
-    private void addActionListeners(JRadioButton... components)
+    private void addActionListenerTo(JRadioButton... components)
     {
-        for(JRadioButton component : components)
-            component.addActionListener(createActionListenerFor(component));
-    }
-
-    /**
-     * Default is Depth First Search
-     * @param button radio button that was pressed
-     * @return {@code ActionListener} that deselects all other radio buttons and sets the search algorithm to be the
-     * selected one if the current search is done.
-     */
-    private ActionListener createActionListenerFor(JRadioButton button)
-    {
-        return actionListenter -> radioButtons.forEach(radioButton -> {
-            if (radioButton == button)
-                return;
-
-            if (button.isSelected())
-                radioButton.setSelected(false);
-
-            if (squaresPanel.getSearchAlgorithm().isDone())
-            {
-                Node startNode = squaresPanel.getSearchAlgorithm().getStartNode();
-                Node endNode = squaresPanel.getSearchAlgorithm().getEndNode();
-                Set<Node> wallNodes = squaresPanel.getSearchAlgorithm().getWallNodes();
-
-                squaresPanel.setSearchAlgorithm(searchFactory.getSearch(
-                        button.isSelected() ? button.getName() : "DFS"
-                ));
-
-                squaresPanel.getSearchAlgorithm().setStartNode(startNode);
-                squaresPanel.getSearchAlgorithm().setEndNode(endNode);
-                squaresPanel.getSearchAlgorithm().setWallNodes(wallNodes);
-            }
-        });
+        for (JRadioButton component : components)
+            component.addActionListener(squaresPanel);
     }
 
     public void setVisible(boolean visible)

@@ -7,7 +7,7 @@ import static org.junit.Assert.assertEquals;
 
 public class AStarSearchTest
 {
-    AStarSearch aStarSearch = new AStarSearch();
+    private AStarSearch aStarSearch = new AStarSearch();
 
     @Test
     public void manhattanDistance()

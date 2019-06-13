@@ -8,11 +8,11 @@ import java.lang.reflect.Constructor;
 
 public class SearchFactory
 {
-    public Search getSearch(String searchType)
+    public Search getSearchByName(String searchName)
     {
         try
         {
-            SearchAlgorithm searchAlgorithm = SearchAlgorithm.valueOf(searchType.toUpperCase());
+            SearchAlgorithm searchAlgorithm = SearchAlgorithm.valueOf(searchName.toUpperCase());
             Class<?> searchClass = Class.forName(searchAlgorithm.getSearchClass().getName());
             Constructor<?> constructor = searchClass.getConstructor();
 
@@ -20,7 +20,7 @@ public class SearchFactory
         }
         catch (Exception e)
         {
-            throw new UnableToConstructSearchException(String.format("Unable to construct a search of type %s", searchType), e);
+            throw new UnableToConstructSearchException(String.format("Unable to construct a search of type %s", searchName), e);
         }
     }
 }

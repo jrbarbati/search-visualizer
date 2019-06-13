@@ -9,15 +9,12 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.spy;
+import static org.junit.Assert.assertEquals;
 
 public class SearchTest
 {
-    Search search = new Search(null) {
+    private Search search = new Search(null) {
         @Override
         protected int calculateHeuristic(Node currentNode, Node endNode) {
             return 0;

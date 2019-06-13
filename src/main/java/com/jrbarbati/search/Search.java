@@ -42,7 +42,11 @@ public abstract class Search
             return;
         }
 
-        for (Node node : validMoves(currentNode))
+        List<Node> validMoves = validMoves(currentNode);
+
+        System.out.printf("Valid moves for %s - %s\n", currentNode, Arrays.toString(validMoves.toArray(new Node[] {})));
+
+        for (Node node : validMoves)
         {
             if (getExplored().contains(node) || getFringe().asList().contains(node))
                 continue;
@@ -101,7 +105,12 @@ public abstract class Search
 
     private boolean isValid(Node potentialNode)
     {
-        return inBounds(potentialNode) && !getWallNodes().contains(potentialNode);
+        boolean inBounds = inBounds(potentialNode);
+        boolean isWall = getWallNodes().contains(potentialNode);
+
+        System.out.printf("Considering %s: inBounds -> %s | isWall -> %s\n", potentialNode, inBounds, isWall);
+
+        return inBounds && !isWall;
     }
 
     protected boolean inBounds(Node potentialNode)
