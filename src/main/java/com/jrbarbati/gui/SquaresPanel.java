@@ -17,7 +17,7 @@ import java.util.Set;
 public class SquaresPanel extends JPanel implements ActionListener, MouseListener, MouseMotionListener, KeyListener
 {
     private char pressedKey = '\0';
-    public static final int NODE_SIZE = 20;
+    public static final int NODE_SIZE = 50;
     private Search searchAlgorithm;
     private SearchFactory searchFactory = new SearchFactory();
     private Timer timer;
@@ -132,7 +132,6 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
     @Override
     public void keyTyped(KeyEvent e)
     {
-        System.out.printf("Typed: %c\n", e.getKeyChar());
         pressedKey = e.getKeyChar();
     }
 
@@ -158,7 +157,10 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
 
         for (int y = 0; y < getHeight(); y += size)
             for (int x = 0; x < getWidth(); x += size)
+            {
                 g.drawRect(x, y, size, size);
+                g.drawString(String.format("%d, %d", x / NODE_SIZE, (y - 1) / NODE_SIZE), x, y);
+            }
     }
 
     private void fillInNodes(Graphics g, Collection<Node> nodes, Color color)
@@ -201,7 +203,7 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
 
     protected Coordinate calculateNodeCoordinate(int x, int y)
     {
-        return new Coordinate(x / NODE_SIZE, y / NODE_SIZE, calibrate(x, NODE_SIZE), calibrate(y, NODE_SIZE));
+        return new Coordinate(x / NODE_SIZE, (y - 1) / NODE_SIZE, calibrate(x, NODE_SIZE), calibrate(y, NODE_SIZE));
     }
 
     private boolean shouldModifyStartNode()

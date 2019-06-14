@@ -1,6 +1,7 @@
 package com.jrbarbati.search;
 
 import com.jrbarbati.path.Node;
+import com.jrbarbati.path.Path;
 import com.jrbarbati.search.fringe.PriorityQueue;
 import com.jrbarbati.search.fringe.Queue;
 import com.jrbarbati.search.fringe.Stack;
@@ -132,25 +133,54 @@ public class SearchTest
             }
         };
 
-        assertFalse(localSearch.pathFound());
+        assertFalse("Empty Fringe and path is null since search is unstarted", localSearch.pathFound());
     }
 
     @Test
     public void pathFound_startedSearch()
     {
+        Stack fringe = new Stack();
+        fringe.push(new Node(0, 0, 0, 0));
 
+        Search localSearch = new Search(fringe) {
+            @Override
+            protected int calculateHeuristic(Node currentNode, Node endNode)
+            {
+                return 0;
+            }
+        };
+
+        assertFalse("Unempty fringe and path is null since search has started", localSearch.pathFound());
     }
 
     @Test
     public void pathFound_finishedSearch_endNodeFound()
     {
+        Search localSearch = new Search(new Stack()) {
+            @Override
+            protected int calculateHeuristic(Node currentNode, Node endNode)
+            {
+                return 0;
+            }
+        };
 
+        localSearch.setPath(new Path());
+
+        assertTrue("Empty fringe and path is not null since end node was found", localSearch.pathFound());
     }
 
     @Test
     public void pathFound_finishedSearch_endNodeNotFound()
     {
+        Search localSearch = new Search(new Stack()) {
+            @Override
+            protected int calculateHeuristic(Node currentNode, Node endNode)
+            {
+                return 0;
+            }
+        };
 
+        assertFalse("Empty fringe and path is null since fringe was exhausted and no end goal was reached", localSearch.pathFound());
     }
 
     @Test
@@ -164,23 +194,64 @@ public class SearchTest
             }
         };
 
-        assertTrue(localSearch.noPathPossible());
+        assertTrue("Fringe empty and path is null since search is unstarted", localSearch.noPathPossible());
     }
 
     @Test
     public void noPathPossible_startedSearch()
     {
+        Stack fringe = new Stack();
+        fringe.push(new Node(0, 0, 0, 0));
 
+        Search localSearch = new Search(fringe) {
+            @Override
+            protected int calculateHeuristic(Node currentNode, Node endNode)
+            {
+                return 0;
+            }
+        };
+
+        assertFalse("Fringe non empty and path is null since has started", localSearch.noPathPossible());
     }
 
     @Test
     public void noPathPossbile_finishedSearch_endNodeFound()
     {
+        Search localSearch = new Search(new Stack()) {
+            @Override
+            protected int calculateHeuristic(Node currentNode, Node endNode)
+            {
+                return 0;
+            }
+        };
 
+        localSearch.setPath(new Path());
+
+        assertFalse("Empty fringe and path is not null since end node was found", localSearch.noPathPossible());
     }
 
     @Test
     public void noPathPossbile_finishedSearch_endNodeNotFound()
+    {
+        Search localSearch = new Search(new Stack()) {
+            @Override
+            protected int calculateHeuristic(Node currentNode, Node endNode)
+            {
+                return 0;
+            }
+        };
+
+        assertTrue("Empty fringe and path is null since search ended and no end node was found", localSearch.noPathPossible());
+    }
+
+    @Test
+    public void isGoal()
+    {
+        assertTrue(search.isGoal(new Node(2, 2, 40, 40)));
+    }
+
+    @Test
+    public void isGoal_not()
     {
 
     }

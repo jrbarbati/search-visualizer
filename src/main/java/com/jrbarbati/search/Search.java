@@ -17,7 +17,7 @@ public abstract class Search
     private Path path;
     private Node startNode;
     private Node endNode;
-    protected static int MAX_BOUND = 50;
+    protected static int MAX_BOUND = 15;
     protected static int MIN_BOUND = 0;
 
     public Search(Fringe fringe)
@@ -36,6 +36,7 @@ public abstract class Search
 
         if (isGoal(currentNode))
         {
+            System.out.printf("Found Goal! Goal Node: %s | Current Node: %s\n", endNode, currentNode);
             setPath(buildPath(startNode, currentNode));
             return;
         }
@@ -59,7 +60,7 @@ public abstract class Search
         getExplored().add(currentNode);
     }
 
-    private boolean isGoal(Node currentNode)
+    protected boolean isGoal(Node currentNode)
     {
         return currentNode.equals(endNode);
     }
@@ -189,7 +190,7 @@ public abstract class Search
         return path;
     }
 
-    private void setPath(Path path)
+    protected void setPath(Path path)
     {
         this.path = path;
     }
