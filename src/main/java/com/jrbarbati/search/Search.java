@@ -9,6 +9,8 @@ import com.jrbarbati.search.move.Move;
 
 import java.util.*;
 
+import static com.jrbarbati.gui.SquaresPanel.*;
+
 public abstract class Search
 {
     private Fringe fringe;
@@ -17,8 +19,6 @@ public abstract class Search
     private Path path;
     private Node startNode;
     private Node endNode;
-    protected static int MAX_BOUND = 15;
-    protected static int MIN_BOUND = 0;
 
     public Search(Fringe fringe)
     {
@@ -28,6 +28,7 @@ public abstract class Search
     public void setup()
     {
         getFringe().push(startNode);
+
     }
 
     public void executeIteration()
