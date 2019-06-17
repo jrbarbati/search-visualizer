@@ -30,8 +30,8 @@ public class SearchTest
         SquaresPanel.MIN_BOUND = 0;
 
         search.setStartNode(new Node(0, 0,  0,  0));
-        search.addWallNode (new Node(1, 1, 20, 20));
-        search.setEndNode  (new Node(2, 2, 40, 40));
+        search.addWallNode(new Node(1, 1, 20, 20));
+        search.setEndNode(new Node(2, 2, 40, 40));
     }
 
     @Test
@@ -50,7 +50,7 @@ public class SearchTest
         System.out.println(Arrays.toString(search.getPath().asList().toArray(new Node[] {})));
 
         assertEquals(search.getStartNode(), search.getPath().asList().get(0));
-        assertEquals(search.getEndNode()  , search.getPath().asList().get(search.getPath().size() - 1));
+        assertEquals(search.getEndNode(), search.getPath().asList().get(search.getPath().size() - 1));
     }
 
     @Test
@@ -69,7 +69,7 @@ public class SearchTest
         System.out.println(Arrays.toString(search.getPath().asList().toArray(new Node[] {})));
 
         assertEquals(search.getStartNode(), search.getPath().asList().get(0));
-        assertEquals(search.getEndNode()  , search.getPath().asList().get(search.getPath().size() - 1));
+        assertEquals(search.getEndNode(), search.getPath().asList().get(search.getPath().size() - 1));
     }
 
     @Test
@@ -88,7 +88,7 @@ public class SearchTest
         System.out.println(Arrays.toString(search.getPath().asList().toArray(new Node[] {})));
 
         assertEquals(search.getStartNode(), search.getPath().asList().get(0));
-        assertEquals(search.getEndNode()  , search.getPath().asList().get(search.getPath().size() - 1));
+        assertEquals(search.getEndNode(), search.getPath().asList().get(search.getPath().size() - 1));
     }
 
     @Test
@@ -107,7 +107,7 @@ public class SearchTest
         System.out.println(Arrays.toString(search.getPath().asList().toArray(new Node[] {})));
 
         assertEquals(search.getStartNode(), search.getPath().asList().get(0));
-        assertEquals(search.getEndNode()  , search.getPath().asList().get(search.getPath().size() - 1));
+        assertEquals(search.getEndNode(), search.getPath().asList().get(search.getPath().size() - 1));
     }
 
 
@@ -115,12 +115,22 @@ public class SearchTest
     public void buildPath()
     {
 
+        Node startNode = new Node(0, 0, 0, 0);
+        Node endNode = new Node(1, 0, 0, 0);
+        endNode.setParent(startNode);
+
+        Path path = search.buildPath(startNode, endNode);
+
+        assertEquals(2, path.size());
+        assertEquals(new Node(0, 0, 0, 0), path.asList().get(0));
+        assertEquals(new Node(1, 0, 0, 0), path.asList().get(1));
     }
 
     @Test
     public void isValid()
     {
-
+        assertTrue(search.isValid(new Node(0, 0, 0, 0)));
+        assertFalse(search.isValid(new Node(1, 1, 20, 20)));
     }
 
     @Test
