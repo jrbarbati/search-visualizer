@@ -44,4 +44,13 @@ public class Path
     {
         return path.size();
     }
+
+    public void clear() {
+        path.clear();
+        currentIndex = -1;
+    }
+
+    public boolean isEmpty() {
+        return path.isEmpty();
+    }
 }

@@ -1,5 +1,6 @@
 package com.jrbarbati.search;
 
+import com.jrbarbati.gui.SquaresPanel;
 import com.jrbarbati.path.Node;
 import com.jrbarbati.path.Path;
 import com.jrbarbati.search.fringe.PriorityQueue;
@@ -25,8 +26,8 @@ public class SearchTest
     @Before
     public void setup()
     {
-        Search.MAX_BOUND = 3;
-        Search.MIN_BOUND = 0;
+        SquaresPanel.MAX_BOUND = 3;
+        SquaresPanel.MIN_BOUND = 0;
 
         search.setStartNode(new Node(0, 0,  0,  0));
         search.addWallNode (new Node(1, 1, 20, 20));
@@ -164,7 +165,10 @@ public class SearchTest
             }
         };
 
-        localSearch.setPath(new Path());
+        Path path = new Path();
+        path.add(new Node(3, 3, 0, 0));
+
+        localSearch.setPath(path);
 
         assertTrue("Empty fringe and path is not null since end node was found", localSearch.pathFound());
     }
@@ -180,7 +184,9 @@ public class SearchTest
             }
         };
 
-        assertFalse("Empty fringe and path is null since fringe was exhausted and no end goal was reached", localSearch.pathFound());
+        localSearch.setPath(new Path());
+
+        assertFalse("Empty fringe and path is empty since fringe was exhausted and no end goal was reached", localSearch.pathFound());
     }
 
     @Test
@@ -225,7 +231,10 @@ public class SearchTest
             }
         };
 
-        localSearch.setPath(new Path());
+        Path path = new Path();
+        path.add(new Node(3, 3, 0, 0));
+
+        localSearch.setPath(path);
 
         assertFalse("Empty fringe and path is not null since end node was found", localSearch.noPathPossible());
     }
@@ -241,7 +250,9 @@ public class SearchTest
             }
         };
 
-        assertTrue("Empty fringe and path is null since search ended and no end node was found", localSearch.noPathPossible());
+        localSearch.setPath(new Path());
+
+        assertTrue("Empty fringe and path is empty since search ended and no end node was found", localSearch.noPathPossible());
     }
 
     @Test
@@ -253,6 +264,6 @@ public class SearchTest
     @Test
     public void isGoal_not()
     {
-
+        assertFalse(search.isGoal(new Node(2, 1, 0, 0)));
     }
 }

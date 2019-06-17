@@ -8,7 +8,7 @@ import java.lang.reflect.Constructor;
 
 public class SearchFactory
 {
-    public Search getSearchByName(String searchName)
+    public static Search getByName(String searchName)
     {
         try
         {

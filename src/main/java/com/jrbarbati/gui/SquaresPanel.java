@@ -19,10 +19,9 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
 {
     private char pressedKey = '\0';
     public static final int NODE_SIZE = 20;
-    public static final int MAX_BOUND = 45;
-    public static final int MIN_BOUND = 0;
+    public static int MAX_BOUND = 45;
+    public static int MIN_BOUND = 0;
     private Search searchAlgorithm;
-    private SearchFactory searchFactory = new SearchFactory();
     private Timer timer;
 
     public SquaresPanel()
@@ -51,24 +50,13 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
     {
         try
         {
-            if ("Clear".equals(e.getActionCommand()))
+            if (buttonClickedIs("Clear", e))
                 getSearchAlgorithm().reset();
-            else if ("Run".equals(e.getActionCommand()))
-            {
-                if (!getSearchAlgorithm().isReady())
-                    throw new MissingCriticalNodeException(
-                            String.format("Missing node needed to run\n\tStart Node: %s\n\t End Node: %s",
-                                    getSearchAlgorithm().getStartNode(),
-                                    getSearchAlgorithm().getEndNode()
-                            )
-                    );
-                getSearchAlgorithm().setup();
+            else if (buttonClickedIs("Run", e))
+                tryToRunSearch();
+            else if (buttonClickedIs("Start", e))
                 timer.start();
-                getSearchAlgorithm().executeIteration();
-            }
-            else if ("Start".equals(e.getActionCommand()))
-                timer.start();
-            else if ("Stop".equals(e.getActionCommand()))
+            else if (buttonClickedIs("Stop", e))
                 timer.stop();
             else if (!getSearchAlgorithm().isDone())
                 getSearchAlgorithm().executeIteration();
@@ -89,11 +77,11 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
         }
     }
 
-    private void  radioButtonListener(ActionEvent e)
+    private void radioButtonListener(ActionEvent e)
     {
         JRadioButton clickedRadioButton = (JRadioButton) e.getSource();
 
-        for(JRadioButton radioButton : getRadioButtons())
+        for (JRadioButton radioButton : getRadioButtons())
         {
             if (radioButton == clickedRadioButton)
                 continue;
@@ -103,27 +91,46 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
         }
 
         if (getSearchAlgorithm().isDone())
-        {
-            Node startNode = getSearchAlgorithm().getStartNode();
-            Node endNode = getSearchAlgorithm().getEndNode();
-            Set<Node> wallNodes = getSearchAlgorithm().getWallNodes();
+            prepareForNewSearch(clickedRadioButton);
+    }
 
-            setSearchAlgorithm(searchFactory.getSearchByName(
-                    clickedRadioButton.isSelected() ? clickedRadioButton.getName() : "DFS"
-            ));
+    private void prepareForNewSearch(JRadioButton clickedRadioButton) {
+        Node startNode = getSearchAlgorithm().getStartNode();
+        Node endNode = getSearchAlgorithm().getEndNode();
+        Set<Node> wallNodes = getSearchAlgorithm().getWallNodes();
 
-            System.out.println(getSearchAlgorithm().getClass().getSimpleName());
+        setSearchAlgorithm(SearchFactory.getByName(
+                clickedRadioButton.isSelected() ? clickedRadioButton.getName() : "DFS"
+        ));
 
-            getSearchAlgorithm().setStartNode(startNode);
-            getSearchAlgorithm().setEndNode(endNode);
-            getSearchAlgorithm().setWallNodes(wallNodes);
-        }
+        getSearchAlgorithm().setStartNode(startNode);
+        getSearchAlgorithm().setEndNode(endNode);
+        getSearchAlgorithm().setWallNodes(wallNodes);
+    }
+
+    private boolean buttonClickedIs(String buttonText, ActionEvent e) {
+        return buttonText.equals(e.getActionCommand());
+    }
+
+    private void tryToRunSearch()
+    {
+        if (!getSearchAlgorithm().isReady())
+            throw new MissingCriticalNodeException("Missing node needed to run\n\tStart Node: %s\n\t End Node: %s", getSearchAlgorithm().getStartNode(), getSearchAlgorithm().getEndNode());
+
+        startSearch();
+    }
+
+    private void startSearch()
+    {
+        getSearchAlgorithm().setup();
+        timer.start();
+        getSearchAlgorithm().executeIteration();
     }
 
     @Override
     public void mouseClicked(MouseEvent e)
     {
-            draw(e);
+        draw(e);
     }
 
     @Override

@@ -28,7 +28,6 @@ public abstract class Search
     public void setup()
     {
         getFringe().push(startNode);
-
     }
 
     public void executeIteration()
@@ -115,8 +114,10 @@ public abstract class Search
 
     private boolean inBounds(Node potentialNode)
     {
-        return potentialNode.getCoordinate().x() >= MIN_BOUND && potentialNode.getCoordinate().y() >= MIN_BOUND
-                && potentialNode.getCoordinate().x() < MAX_BOUND && potentialNode.getCoordinate().y() < MAX_BOUND;
+        int x = potentialNode.getCoordinate().x();
+        int y = potentialNode.getCoordinate().y();
+
+        return (x >= MIN_BOUND && x < MAX_BOUND) && (y >= MIN_BOUND && y < MAX_BOUND);
     }
 
     private int calculateTotalCost(Node startNode, Node endNode)
@@ -137,12 +138,12 @@ public abstract class Search
 
     public boolean pathFound()
     {
-        return path != null;
+        return path != null && !path.isEmpty();
     }
 
     public boolean noPathPossible()
     {
-        return fringe.isEmpty() && path == null;
+        return fringe.isEmpty() && (path == null || path.isEmpty());
     }
 
     public boolean isDone()
@@ -153,10 +154,10 @@ public abstract class Search
     public void reset()
     {
         startNode = null;
-        wall = new HashSet<>();
+        wall.clear();
         fringe.clear();
-        explored = new HashSet<>();
-        path = null;
+        explored.clear();
+        path.clear();
         endNode = null;
     }
 

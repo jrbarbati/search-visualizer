@@ -6,4 +6,9 @@ public class MissingCriticalNodeException extends RuntimeException
     {
         super(message);
     }
+
+    public MissingCriticalNodeException(String format, Object... args)
+    {
+        this(String.format(format, args));
+    }
 }
