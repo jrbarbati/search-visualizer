@@ -72,7 +72,7 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
         }
         catch (Exception ex)
         {
-            JOptionPane.showMessageDialog(this, String.format("Unable to continue.\n%s", ex.getMessage()), "Error!", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, String.format("Unable to continue.\n%s - %s", ex.getClass().getSimpleName(), ex.getMessage()), "Error!", JOptionPane.ERROR_MESSAGE);
             ex.printStackTrace();
         }
     }
@@ -264,6 +264,9 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
     }
 
     @Override
+    public void mouseMoved(MouseEvent e) {}
+
+    @Override
     public void mousePressed(MouseEvent e) {}
 
     @Override
@@ -274,9 +277,6 @@ public class SquaresPanel extends JPanel implements ActionListener, MouseListene
 
     @Override
     public void mouseExited(MouseEvent e) {}
-
-    @Override
-    public void mouseMoved(MouseEvent e) {}
 
     @Override
     public void keyPressed(KeyEvent e) {}

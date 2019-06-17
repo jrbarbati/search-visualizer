@@ -28,6 +28,9 @@ public abstract class Search
     public void setup()
     {
         getFringe().push(startNode);
+        removeWallNode(startNode);
+        removeWallNode(endNode);
+        path = new Path();
     }
 
     public void executeIteration()
@@ -44,6 +47,7 @@ public abstract class Search
         List<Node> validMoves = validMoves(currentNode);
 
         System.out.printf("Valid moves for %s - %s\n", currentNode, Arrays.toString(validMoves.toArray(new Node[] {})));
+        System.out.printf("Explored nodes for %s - %s]n", currentNode, Arrays.toString(getExplored().toArray(new Node[] {})));
 
         for (Node node : validMoves)
         {
@@ -126,11 +130,6 @@ public abstract class Search
         return path.size() - 1;
     }
 
-    public void addWallNode(Node node)
-    {
-        getWallNodes().add(node);
-    }
-
     public void removeWallNode(Node node)
     {
         getWallNodes().remove(node);
@@ -172,6 +171,11 @@ public abstract class Search
             explored = new HashSet<>();
 
         return explored;
+    }
+
+    public void addWallNode(Node node)
+    {
+        getWallNodes().add(node);
     }
 
     public Set<Node> getWallNodes()
