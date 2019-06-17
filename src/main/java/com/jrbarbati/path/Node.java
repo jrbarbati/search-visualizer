@@ -62,7 +62,7 @@ public class Node
     @Override
     public int hashCode()
     {
-        return Objects.hash(coordinate.x(), coordinate.y());
+        return Objects.hash(coordinate, g, h);
     }
 
     @Override
