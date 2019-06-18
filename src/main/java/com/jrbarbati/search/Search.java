@@ -30,7 +30,6 @@ public abstract class Search
         getFringe().push(startNode);
         removeWallNode(startNode);
         removeWallNode(endNode);
-        path = new Path();
     }
 
     public void executeIteration()
@@ -156,7 +155,7 @@ public abstract class Search
         wall.clear();
         fringe.clear();
         explored.clear();
-        path.clear();
+        path = null;
         endNode = null;
     }
 
